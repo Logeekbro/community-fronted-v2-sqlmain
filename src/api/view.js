@@ -3,20 +3,20 @@ import store from '@/store'
 
 const userToken = store.getters.token
 const userId = store.getters.user.userId
+const start = "view"
 
-// 增加阅读量
+// 记录浏览历史
 export function addView(id) {
   return request(({
-    url: `/view/${id}/${userToken}`,
+    url: `/${start}/${id}/${userToken}`,
     method: 'post'
   }))
 }
 
-
-// 获取阅读量
-export function getViewCount(articleId) {
+// 删除浏览历史
+export function deleteView(id){
   return request(({
-    url: `/view/count/${articleId}`,
-    method: 'get'
+    url: `/${start}/${id}/${userToken}`,
+    method: 'delete'
   }))
 }

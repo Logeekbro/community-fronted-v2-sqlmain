@@ -1,8 +1,15 @@
 import Cookies from 'js-cookie'
 
-const viewCache = "articleId"
+/**
+ * 记录用户浏览过的文章id
+ */
 
-export function setViewCache(id, expires=10){
+const viewCache = "articleId"
+// 默认cookie过期时间
+const defaultExpire = 365
+
+
+export function setViewCache(id, expires=defaultExpire){
     Cookies.set(viewCache, id, {expires: expires})
 }
 

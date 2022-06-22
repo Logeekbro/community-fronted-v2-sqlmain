@@ -58,7 +58,7 @@ export default {
     this.fetchComments(false)
   },
   methods: {
-    // 初始化 autoScroll:是否自动滚动到评论区顶部，toFirst:是否跳转到第一页
+    // 初始化, autoScroll:是否自动滚动到评论区顶部，toFirst:是否跳转到第一页
     async fetchComments(autoScroll=true, toFirst=false) {
       if(toFirst){
         this.page.current = 1

@@ -22,9 +22,9 @@
       <div class="column">
 
         <!-- tabs -->
-        <vs-tabs alignment="fixed">
+        <vs-tabs>
           <!--用户发布的文章-->
-          <vs-tab label="文章" style="padding: 0" @click="fetchUserById">
+          <vs-tab label="文  章" style="padding: 0;" @click="fetchUserById" icon="article">
             <el-card>
               <div v-if="loadText != ''">
                 {{ loadText }}
@@ -76,7 +76,7 @@
           </vs-tab>
 
           <!-- 关注列表 -->
-          <vs-tab label="关注" @click="fectchUserFollows">
+          <vs-tab label="关  注" @click="fectchUserFollows" icon="group_work">
             <el-card>
               <div v-if="follows.length == 0" style="text-align: center">
                 <strong>暂无关注</strong>
@@ -94,13 +94,13 @@
           </vs-tab>
 
           <!-- 浏览历史记录 -->
-          <vs-tab label="浏览记录" v-if="topicUser.userId == user.userId" @click="fetchUserHistory">
+          <vs-tab label="浏  览  记  录" v-if="topicUser.userId == user.userId" @click="fetchUserHistory" icon="history">
             <el-card>
               <div v-if="loadText != ''">
                 {{ loadText }}
               </div>
-              <div v-if="historys.length === 0">
-                暂无浏览记录
+              <div v-if="historys.length === 0" style="text-align: center">
+                <strong>无浏览记录</strong>
               </div>
               <div v-else class="topicUser-info">
                 <article v-for="(item, index) in historys" :key="index" class="media">
@@ -125,24 +125,19 @@
                       </div>
                     </nav>
                   </div>
-                  <!-- <div v-if="token" class="media-right">
-                    <div v-if="topicUser.account === user.account" class="level">
-                      <div class="level-item mr-1">
-                        <router-link :to="{ name: 'topic-edit', params: { id: item.articleId } }">
-                          <span class="tag is-info">编辑</span>
-                        </router-link>
-                      </div>
+                  <div class="media-right">
+                    <div class="level">
                       <div class="level-item">
-                        <a @click="handleDelete(item.articleId)">
+                        <a @click="handleDeleteView(item.view.viewId, item.article.articleId, index)">
                           <span class="tag is-danger">删除</span>
                         </a>
                       </div>
                     </div>
-                  </div> -->
+                  </div>
                 </article>
               </div>
               <!-- 分页 -->
-              <pagination v-show="historyPage.total > 0" class="mt-5" :total="historyPage.total"
+              <pagination v-show="historys.length > 0" class="mt-5" :total="historyPage.total"
                 :page.sync="historyPage.current" :limit.sync="historyPage.size" @pagination="fetchUserHistory" />
             </el-card>
           </vs-tab>
@@ -154,10 +149,12 @@
 
 <script>
 import { getOpenInfo, getFollows } from '@/api/user'
+import { getInfoByName, deleteTopic, getUserHistory } from '@/api/post'
+import { deleteView } from '@/api/view'
+import { getViewCache, setViewCache } from '@/utils/view-cache'
 import pagination from '@/components/Pagination/index'
 import FollowButton from '@/components/Follow/FollowButton'
 import { mapGetters } from 'vuex'
-import { getInfoByName, deleteTopic, getUserHistory } from '@/api/post'
 import store from '@/store'
 
 export default {
@@ -234,6 +231,16 @@ export default {
         this.historyPage = data
         this.historys = data.records
       })
+    },
+    handleDeleteView(id, articleId,index){
+      deleteView(id).then((rep) => {
+        this.historys.splice(index, 1)
+        if(getViewCache() == articleId) setViewCache("-1")
+        this.msg.success("删除成功")
+      })
+    },
+    handleLoadView(){
+      console.log("滚动了")
     }
   }
 }
