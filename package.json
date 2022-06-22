@@ -1,0 +1,34 @@
+{
+  "name": "doubao_community_frontend",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build"
+  },
+  "dependencies": {
+    "ant-design-vue": "^1.7.8",
+    "axios": "^0.21.1",
+    "buefy": "^0.9.4",
+    "core-js": "^3.6.5",
+    "darkreader": "^4.9.27",
+    "date-fns": "^2.17.0",
+    "dayjs": "^1.10.4",
+    "element-ui": "^2.15.0",
+    "js-cookie": "^2.2.1",
+    "material-icons": "^1.11.1",
+    "nprogress": "^0.2.0",
+    "vditor": "^3.8.14",
+    "vue": "^2.6.11",
+    "vue-router": "^3.2.0",
+    "vuesax": "^3.12.2",
+    "vuex": "^3.4.0"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "~4.5.0",
+    "@vue/cli-plugin-router": "~4.5.0",
+    "@vue/cli-plugin-vuex": "~4.5.0",
+    "@vue/cli-service": "~4.5.0",
+    "vue-template-compiler": "^2.6.11"
+  }
+}
