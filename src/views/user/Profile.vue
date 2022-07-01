@@ -12,7 +12,6 @@
           </div>
 
           <div>
-            <!-- <p class="content">积分：<code>{{ topicUser.score }}</code></p> -->
             <p class="content">注册日期：{{ dayjs(topicUser.createTime).format("YYYY/MM/DD") }}</p>
             <p class="content">简介：{{ topicUser.introduce }}</p>
           </div>
@@ -22,7 +21,7 @@
       <div class="column">
 
         <!-- tabs -->
-        <vs-tabs>
+        <vs-tabs alignment="left">
           <!--用户发布的文章-->
           <vs-tab label="文  章" style="padding: 0;" @click="fetchUserById" icon="article">
             <el-card>
@@ -103,6 +102,10 @@
                 <strong>无浏览记录</strong>
               </div>
               <div v-else class="topicUser-info">
+                <div style="margin-bottom: 20px" class="level-right">
+                  <!-- <vs-button color="danger" type="flat">清除浏览记录</vs-button> -->
+                  <vs-button color="danger" size="small" type="gradient">清除所有记录</vs-button>
+                </div>
                 <article v-for="(item, index) in historys" :key="index" class="media">
                   <div class="media-content">
                     <div class="content ellipsis is-ellipsis-1">
@@ -232,15 +235,15 @@ export default {
         this.historys = data.records
       })
     },
-    handleDeleteView(id, articleId,index){
+    handleDeleteView(id, articleId, index) {
       deleteView(id).then((rep) => {
         this.historys.splice(index, 1)
-        if(getViewCache() == articleId) setViewCache("-1")
+        if (getViewCache() == articleId) setViewCache("-1")
         this.msg.success("删除成功")
       })
     },
-    handleLoadView(){
-      console.log("滚动了")
+    handleDeleteAll(){
+      
     }
   }
 }
