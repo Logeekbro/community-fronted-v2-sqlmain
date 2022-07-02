@@ -5,31 +5,53 @@
         <div slot="header" class="">
           🔍 检索到 <span class="has-text-info">{{ topics.length }}</span> 篇有关
           <span class="has-text-info">{{ this.$route.params.name }}</span>
-          的话题
+          的文章
         </div>
 
         <div class="text item">
-          <article v-for="(item, index) in topics" :key="index" class="media mt-3">
-            <div class="media-content">
-              <div class="content">
-                <el-tooltip class="item" effect="dark" :content="item.title" placement="top">
-                  <router-link :to="{ name: 'post-detail',params:{id: item.id } }">
-                    {{ item.title }}
-                  </router-link>
-                </el-tooltip>
+          <article v-for="(item, index) in topics" :key="index" class="media">
+              <div class="media-left">
+                <!-- <figure class="image is-48x48">
+                  <img :src="item.author.avatar + '?' + avatarTS" style="border-radius: 5px;">
+                </figure> -->
+                <a-avatar shape="square" :size="48" :src="item.author.avatar + '?' + avatarTS" />
               </div>
-
-              <nav class="level has-text-grey is-size-7">
-                <div class="level-left">
-                  <span>发布于:{{ dayjs(item.createTime).format('YYYY-MM-DD HH:mm:ss') }}</span>
-
-                  <span class="mx-3">浏览:{{ item.view }}</span>
-
-                  <span>评论:{{ item.comments }}</span>
+              <div class="media-content">
+                <div class="">
+                  <p class="ellipsis is-ellipsis-1">
+                    <el-tooltip :open-delay="500" class="item" effect="dark" :content="item.article.title"
+                      placement="top">
+                      <router-link :to="{ name: 'post-detail', params: { id: item.article.articleId } }">
+                        <span class="is-size-6"><strong>{{ item.article.title }}</strong></span>
+                      </router-link>
+                    </el-tooltip>
+                  </p>
                 </div>
-              </nav>
-            </div>
-          </article>
+                <nav class="level has-text-grey is-mobile  is-size-7 mt-2">
+                  <div class="level-left">
+                    <div class="level-left">
+                      <router-link class="level-item" :to="{ path: `/member/${item.author.userId}/home` }">
+                        {{ item.author.nickName }}
+                      </router-link>
+
+                      <span class="mr-1">
+                        发布于:{{ dayjs(item.article.createTime).format("YYYY/MM/DD HH:mm") }}
+                      </span>
+
+                      <span v-for="(tag, index) in item.tags" :key="index"
+                        class="tag is-hidden-mobile is-success is-light mr-1">
+                        <router-link :to="{ name: 'tag', params: { name: tag } }">
+                          {{ "#" + tag }}
+                        </router-link>
+                      </span>
+
+                      <span class="is-hidden-mobile">浏览:{{ item.article.viewCount }}</span>
+                    </div>
+                  </div>
+                </nav>
+              </div>
+              <div class="media-right" />
+            </article>
         </div>
       </el-card>
     </div>
@@ -46,7 +68,7 @@
           </ul>
         </div>
       </el-card>
-      <el-card shadow="hover">
+      <!-- <el-card shadow="hover">
         <div slot="header">
           🏷 热门标签
         </div>
@@ -65,14 +87,14 @@
             </li>
           </ul>
         </div>
-      </el-card>
+      </el-card> -->
     </div>
   </div>
 
 </template>
 
 <script>
-import { getTopicsByTag } from '@/api/tag'
+import { getTopicsByTag } from '@/api/search'
 
 export default {
   name: 'Tag',
@@ -93,9 +115,8 @@ export default {
   methods: {
     fetchList: function() {
       getTopicsByTag(this.paramMap).then(response => {
-        console.log(response)
-        this.topics = response.data.topics.records
-        this.tags = response.data.hotTags.records
+        const { data } = response
+        this.topics = data
       })
     }
   }

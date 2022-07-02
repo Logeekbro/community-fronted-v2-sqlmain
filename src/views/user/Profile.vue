@@ -1,4 +1,5 @@
 <template>
+
   <div class="member">
     <div class="columns">
       <div class="column is-one-quarter">
@@ -21,7 +22,7 @@
       <div class="column">
 
         <!-- tabs -->
-        <vs-tabs alignment="left">
+        <vs-tabs alignment="fixed" style="z-index: 0">
           <!--用户发布的文章-->
           <vs-tab label="文  章" style="padding: 0;" @click="fetchUserById" icon="article">
             <el-card>
@@ -104,7 +105,7 @@
               <div v-else class="topicUser-info">
                 <div style="margin-bottom: 20px" class="level-right">
                   <!-- <vs-button color="danger" type="flat">清除浏览记录</vs-button> -->
-                  <vs-button color="danger" size="small" type="gradient">清除所有记录</vs-button>
+                  <vs-button @click="handleDeleteAll()" color="danger" size="small" type="gradient">清除浏览记录</vs-button>
                 </div>
                 <article v-for="(item, index) in historys" :key="index" class="media">
                   <div class="media-content">
@@ -141,7 +142,7 @@
               </div>
               <!-- 分页 -->
               <pagination v-show="historys.length > 0" class="mt-5" :total="historyPage.total"
-                :page.sync="historyPage.current" :limit.sync="historyPage.size" @pagination="fetchUserHistory" />
+                :page.sync="historyPage.current" :limit.sync="historyPage.size" @pagination="fetchUserHistory()" />
             </el-card>
           </vs-tab>
         </vs-tabs>
@@ -153,7 +154,7 @@
 <script>
 import { getOpenInfo, getFollows } from '@/api/user'
 import { getInfoByName, deleteTopic, getUserHistory } from '@/api/post'
-import { deleteView } from '@/api/view'
+import { deleteView, deleteAll } from '@/api/view'
 import { getViewCache, setViewCache } from '@/utils/view-cache'
 import pagination from '@/components/Pagination/index'
 import FollowButton from '@/components/Follow/FollowButton'
@@ -242,8 +243,22 @@ export default {
         this.msg.success("删除成功")
       })
     },
-    handleDeleteAll(){
-      
+    handleDeleteAll() {
+      this.$buefy.dialog.confirm({
+        title: '清除所有记录',
+        message: '确定要清除所有记录吗？数据将无法恢复',
+        confirmText: '确认',
+        cancelText: '取消',
+        type: 'is-danger',
+        onConfirm: () => this.doDeleteAll()
+      })
+    },
+    doDeleteAll() {
+      deleteAll().then(v => {
+        this.msg.success("清除成功")
+        this.historys = []
+      })
+
     }
   }
 }

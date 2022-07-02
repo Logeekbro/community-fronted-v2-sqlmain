@@ -5,7 +5,7 @@ import store from '@/store'
 const userToken = store.getters.token
 const start = "article"
 
-// 用户主页
+// 用户主页文章列表
 export function getInfoByName(username, page, size) {
   return request({
     url: `/${start}/user/list`,
@@ -18,9 +18,10 @@ export function getInfoByName(username, page, size) {
   })
 }
 
+// 获取首页文章
 export function getList(pageNo, size, type) {
   return request(({
-    url: `/${start}/${type}`,
+    url: `/${start}/open/${type}`,
     method: 'get',
     params: { current: pageNo, size: size }
   }))
@@ -36,10 +37,10 @@ export function post(topic) {
   })
 }
 
-// 浏览
+// 获取文章详情
 export function getTopicDetail(id) {
   return request({
-    url: `/${start}/detail/${id}`,
+    url: `/${start}/open/detail/${id}`,
     method: 'get',
   })
 }
@@ -75,9 +76,10 @@ export function deleteTopic(id) {
   })
 }
 
+// 用户发表的文章数量
 export function getArticleCount(id) {
   return request({
-    url: `/${start}/count/${id}`,
+    url: `/${start}/open/count/${id}`,
     method: 'get',
   })
 }

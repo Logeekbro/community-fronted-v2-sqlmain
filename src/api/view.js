@@ -20,3 +20,11 @@ export function deleteView(id){
     method: 'delete'
   }))
 }
+
+// 删除所有浏览历史
+export function deleteAll() {
+  return request(({
+    url: `/${start}/all/${userToken}`,
+    method: 'delete'
+  }))
+}

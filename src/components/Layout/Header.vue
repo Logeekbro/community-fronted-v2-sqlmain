@@ -19,7 +19,7 @@
       <template slot="end">
         <b-navbar-item tag="div" style="margin-top: 15px">
           <b-field position="is-centered">
-            <b-input v-model="searchKey" class="s_input" width="80%" placeholder="搜索帖子、标签和用户" rounded clearable
+            <b-input v-model="searchKey" class="s_input" width="80%" placeholder="搜索文章、标签和用户" rounded clearable
               @keyup.enter.native="search()" />
 
             <p class="control">
@@ -116,7 +116,6 @@ export default {
       })
     },
     search() {
-      console.log(this.token)
       if (this.searchKey.trim() === null || this.searchKey.trim() === '') {
         this.msg.warn('请输入关键字搜索！')
         return false
