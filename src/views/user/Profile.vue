@@ -10,6 +10,9 @@
             <p class="mt-3"><strong>{{ topicUser.nickName }}</strong></p>
             <br>
             <follow-button :authorId="topicUser.userId"></follow-button>
+            <br>
+            <b-button v-if="topicUser.userId != user.userId" @click="handleCreateChat(topicUser.userId)"
+              type="is-info is-light is-link button-center is-fullwidth">发送消息</b-button>
           </div>
 
           <div>
@@ -107,6 +110,7 @@
                   <!-- <vs-button color="danger" type="flat">清除浏览记录</vs-button> -->
                   <vs-button @click="handleDeleteAll()" color="danger" size="small" type="gradient">清除浏览记录</vs-button>
                 </div>
+                <vs-divider></vs-divider>
                 <article v-for="(item, index) in historys" :key="index" class="media">
                   <div class="media-content">
                     <div class="content ellipsis is-ellipsis-1">
@@ -186,7 +190,7 @@ export default {
   computed: {
     ...mapGetters(['token', 'user'])
   },
-  created() {
+  mounted() {
     this.fetchUserById()
     getOpenInfo(this.$route.params.username).then((res) => {
       const { data } = res
@@ -256,8 +260,15 @@ export default {
     doDeleteAll() {
       deleteAll().then(v => {
         this.msg.success("清除成功")
+        setViewCache("-1")
         this.historys = []
       })
+    },
+    handleCreateChat(userId) {
+      this.$router.push({ path: '/message?targetId=' + userId })
+      // initChat(userId).then(r => {
+      //   this.$router.push({ path: '/message?targetId=' + userId })
+      // })
 
     }
   }

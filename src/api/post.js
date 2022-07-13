@@ -29,7 +29,7 @@ export function getList(pageNo, size, type) {
 
 // 发布
 export function post(topic) {
-  topic.userToken = userToken;
+  topic.userToken = store.getters.token;
   return request({
     url: `/${start}/`,
     method: 'post',
@@ -57,7 +57,7 @@ export function getRecommendTopics(id) {
 
 // 更新
 export function update(topic) {
-  topic.userToken = userToken
+  topic.userToken = store.getters.token
   return request({
     url: `/${start}/`,
     method: 'put',
@@ -67,7 +67,7 @@ export function update(topic) {
 
 export function deleteTopic(id) {
   const data = {
-    userToken: userToken
+    userToken: store.getters.token
   }
   return request({
     url: `/${start}/${id}`,
@@ -91,7 +91,7 @@ export function getUserHistory(current, size){
     size: size
   }
   return request({
-    url: `/${start}/history/${userToken}`,
+    url: `/${start}/history/${store.getters.token}`,
     method: 'get',
     params: params
   })

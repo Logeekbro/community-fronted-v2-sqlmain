@@ -99,13 +99,14 @@
         </el-tabs>
 
       </div>
-      <vs-divider v-if="articleList == null && articleList.length == 0">
-        <strong><a @click="loadMore">点击加载更多</a></strong>
+      <vs-divider v-show="hasMore">
+        <div style="text-align: center;">
+          <strong><a @click="loadMore">点击加载更多</a></strong>
+        </div>
       </vs-divider>
-      <!-- <div style="text-align: center;" v-show="hasMore">
-        <a @click="loadMore">点击加载更多</a>
-      </div> -->
 
+
+      <!-- <strong><a @click="loadMore">点击加载更多</a></strong> -->
       <!--分页-->
       <!-- <pagination
         v-show="page.total > 0"

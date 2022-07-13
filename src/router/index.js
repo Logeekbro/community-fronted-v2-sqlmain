@@ -69,9 +69,16 @@ const routes = [
   // 用户设置
   {
     name: 'user-setting',
-    path: '/member/:username/setting',
+    path: '/member/setting',
     component: () => import('@/views/user/Setting'),
     meta: { title: '设置', requireAuth: true }
+  },
+  // 消息中心
+  {
+    name: 'user-message',
+    path: '/message',
+    component: () => import('@/views/user/Message'),
+    meta: {title: '消息中心', requireAuth: true}
   },
   {
     path: "/404",

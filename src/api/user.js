@@ -1,8 +1,6 @@
 import request from '@/utils/request'
 import store from '@/store'
 
-// 从store中获取token
-const userToken = store.getters.token;
 
 
 // 用户公开信息
@@ -24,7 +22,7 @@ export function getFollows(userId){
 // 用户设置中心信息
 export function getInfo() {
   const params = {
-    userToken: userToken
+    userToken: store.getters.token
   }
   return request({
     url: `/user/info/detail`,
@@ -34,7 +32,7 @@ export function getInfo() {
 }
 // 更新
 export function update(user) {
-  user.userToken = userToken
+  user.userToken = store.getters.token
   return request({
     url: '/user/info',
     method: 'put',
@@ -45,7 +43,7 @@ export function update(user) {
 // 修改密码
 export function updatePassword(passwordForm){
   return request({
-    url: `/user/password/${passwordForm.oldPassword}/${passwordForm.newPassword}/${userToken}`,
+    url: `/user/password/${passwordForm.oldPassword}/${passwordForm.newPassword}/${store.getters.token}`,
     method: 'put',
   })
 }

@@ -4,7 +4,7 @@
       <div class="mt-6">
         <p class="content">404 404 404 404 404 404 404 404 404 404 404 404</p>
         <p class="content subtitle mt-6">
-          页面不存在， {{ times }} 秒后将返回首页!
+          <!-- 页面不存在， {{ times }} 秒后将返回首页! -->
         </p>
       </div>
     </div>
@@ -20,7 +20,7 @@ export default {
     }
   },
   created() {
-    this.goHome();
+    // this.goHome();
   },
   methods: {
     goHome: function () {

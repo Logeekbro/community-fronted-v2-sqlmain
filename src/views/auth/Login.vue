@@ -73,7 +73,7 @@ export default {
           this.$store
             .dispatch("user/login", this.ruleForm)
             .then(() => {
-              this.msg.success("登录成功")
+              // this.msg.success("登录成功")
               setTimeout(() => {
                 this.loading = false;
                 this.$router.push({ path: this.redirect || "/" });

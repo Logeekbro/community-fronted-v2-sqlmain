@@ -23,7 +23,7 @@
               @keyup.enter.native="search()" />
 
             <p class="control">
-              <b-button class="is-info" @click="search()">检索
+              <b-button class="is-info" @click="search()">搜 索
               </b-button>
             </p>
           </b-field>
@@ -50,18 +50,26 @@
           <!-- <b-navbar-item>
             <a-avatar shape="square" :size="25" :src="user.avatar" />
           </b-navbar-item> -->
-          <b-navbar-dropdown :label="user.nickName">
-            <b-navbar-item tag="router-link" :to="{ path: `/member/${user.userId}/home` }">
-              🧘 个人中心
-            </b-navbar-item>
-            <hr class="dropdown-divider">
-            <b-navbar-item tag="router-link" :to="{ path: `/member/${user.userId}/setting` }">
-              ⚙ 设置中心
-            </b-navbar-item>
-            <hr class="dropdown-divider">
-            <b-navbar-item tag="a" @click="logout"> 👋 退出登录
-            </b-navbar-item>
-          </b-navbar-dropdown>
+          <el-badge :hidden="unReadCount <= 0" value="new" class="item">
+            <b-navbar-dropdown :label="user.nickName">
+              <b-navbar-item tag="router-link" :to="{ path: `/member/${user.userId}/home` }">
+                🧘 个人中心
+              </b-navbar-item>
+              <hr class="dropdown-divider">
+              <b-navbar-item tag="router-link" :to="{ path: `/message` }">
+                <el-badge :hidden="unReadCount <= 0" :value="unReadCount" :max="99" class="item">
+                  📧 消息中心
+                </el-badge>
+              </b-navbar-item>
+              <hr class="dropdown-divider">
+              <b-navbar-item tag="router-link" :to="{ path: `/member/setting` }">
+                ⚙ 设置中心
+              </b-navbar-item>
+              <hr class="dropdown-divider">
+              <b-navbar-item tag="a" @click="logout"> 👋 退出登录
+              </b-navbar-item>
+            </b-navbar-dropdown>
+          </el-badge>
         </b-navbar-item>
 
       </template>
@@ -71,8 +79,10 @@
 
 <script>
 import { disable as disableDarkMode, enable as enableDarkMode } from 'darkreader'
+import { getAllUnReadCount } from '@/api/message'
 import { getDarkMode, setDarkMode } from '@/utils/auth'
 import { mapGetters } from 'vuex'
+import store from '@/store'
 
 export default {
   name: 'Header',
@@ -82,6 +92,8 @@ export default {
       doubaoImg: require('@/assets/image/doubao.png'),
       searchKey: '',
       darkMode: false,
+      unReadCount: 0,
+      cycleId: 0
     }
   },
   computed: {
@@ -98,7 +110,7 @@ export default {
       setDarkMode(this.darkMode)
     }
   },
-  created() {
+  mounted() {
     // 获取cookie中的夜间还是白天模式
     this.darkMode = getDarkMode()
     if (this.darkMode) {
@@ -106,24 +118,46 @@ export default {
     } else {
       disableDarkMode()
     }
+    console.log(store.getters.token)
+    if (store.getters.token != null && store.getters.token != '') {
+      this.getMessageCount()
+      this.cycleGetMessageCount()
+    }
+
   },
   methods: {
     async logout() {
       this.$store.dispatch('user/logout').then(() => {
         setTimeout(() => {
           this.$router.push({ path: this.redirect || '/login' })
-        }, 500)
+        }, 1)
       })
     },
     search() {
       if (this.searchKey.trim() === null || this.searchKey.trim() === '') {
+        this.searchKey = ''
         this.msg.warn('请输入关键字搜索！')
         return false
       }
       this.$router.push({ path: '/search?key=' + this.searchKey })
     },
     async getUserInfo() {
+
       this.$store.dispatch('user/getInfo');
+    },
+    getMessageCount() {
+      if (store.getters.token == null || store.getters.token == '') {
+        clearInterval(this.cycleId)
+      }
+      else {
+        getAllUnReadCount().then(r => {
+          this.unReadCount = r.data.unReadCount
+        })
+      }
+
+    },
+    cycleGetMessageCount() {
+      this.cycleId = setInterval(this.getMessageCount, 10000)
     }
   }
 }

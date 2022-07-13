@@ -50,7 +50,7 @@
           <small class="ml-2">{{ dayjs(comment.comment.createTime).format('YYYY/MM/DD HH:mm') }}</small>
 
           <br>
-          <b-message type="is-info" style="margin-top:10px">
+          <b-message type="is-info" style="margin-top:10px;">
             {{ comment.comment.content }}
           </b-message>
 

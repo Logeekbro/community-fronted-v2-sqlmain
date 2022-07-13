@@ -13,47 +13,11 @@ export function sendMessage(message) {
     })
 }
 
-// 初始化聊天
-export function initChat(targetId) {
-    return request({
-        url: `/${start}/init/${targetId}/${store.getters.token}`,
-        method: 'post'
-    })
-}
-
-// 获取用户所有消息
+// 获取用户所有已读消息
 export function getAllMessage() {
     return request({
         url: `/${start}/all/${store.getters.token}`,
         method: 'get'
-    })
-}
-
-// 获取聊天列表
-export function getTargetList() {
-    return request({
-        url: `/${start}/targetList/${store.getters.token}`,
-        method: 'get'
-    })
-}
-
-// 获取消息列表
-export function getMessageList(targetId, page) {
-    return request({
-        url: `/${start}/list/${targetId}/${store.getters.token}`,
-        method: 'get',
-        params: {
-            current: page.current,
-            size: page.size
-        }
-    })
-}
-
-// 获取某个聊天的未读消息
-export function getLatestMessage(senderId) {
-    return request({
-        url: `/${start}/unRead/${senderId}/${store.getters.token}`,
-        method: 'get',
     })
 }
 
@@ -77,14 +41,6 @@ export function updateReadStatus(senderId) {
 export function getAllUnReadCount() {
     return request({
         url: `/${start}/unReadCount/all/${store.getters.token}`,
-        method: 'get',
-    })
-}
-
-// 根据id获取未读消息
-export function getUnReadCountById(id) {
-    return request({
-        url: `/${start}/unReadCount/${id}/${store.getters.token}`,
         method: 'get',
     })
 }
