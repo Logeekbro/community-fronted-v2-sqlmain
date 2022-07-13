@@ -1,13 +1,10 @@
 import request from '@/utils/request'
 import store from '@/store'
 
-const userToken = store.getters.token
-const userId = store.getters.user.userId
-
 // 关注
 export function follow(id) {
   return request(({
-    url: `/follow/${id}/${userToken}`,
+    url: `/follow/${id}/${store.getters.token}`,
     method: 'post'
   }))
 }
@@ -15,7 +12,7 @@ export function follow(id) {
 // 取消关注
 export function unFollow(id) {
   return request(({
-    url: `/follow/${id}/${userToken}`,
+    url: `/follow/${id}/${store.getters.token}`,
     method: 'delete'
   }))
 }
@@ -23,7 +20,7 @@ export function unFollow(id) {
 // 验证是否关注
 export function hasFollow(topicUserId) {
   return request(({
-    url: `/follow/check/${topicUserId}/${userId}`,
+    url: `/follow/check/${topicUserId}/${store.getters.user.userId}`,
     method: 'get'
   }))
 }

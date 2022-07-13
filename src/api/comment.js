@@ -1,8 +1,6 @@
 import request from '@/utils/request'
 import store from '@/store'
 
-const userToken = store.getters.token
-
 export function fetchCommentsByTopicId(articleId, current, size) {
   const params = {
     current: current,
@@ -17,7 +15,7 @@ export function fetchCommentsByTopicId(articleId, current, size) {
 
 export function pushComment(data) {
   return request({
-    url: `/comment/${userToken}`,
+    url: `/comment/${store.getters.token}`,
     method: 'post',
     data: data
   })
@@ -25,7 +23,7 @@ export function pushComment(data) {
 
 export function deleteComment(id) {
   return request({
-    url: `/comment/${id}/${userToken}`,
+    url: `/comment/${id}/${store.getters.token}`,
     method: 'delete',
   })
 }
