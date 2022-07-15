@@ -1,5 +1,5 @@
 <template>
-  <div class="columns" v-show="flag">
+  <div class="columns">
     <!--文章详情-->
     <div class="column is-three-quarters">
       <!--主题-->
@@ -60,6 +60,7 @@
 <script>
 import { deleteTopic, getTopicDetail } from '@/api/post'
 import { addView } from '@/api/view'
+import { getOpenInfo } from '../../api/user'
 import { mapGetters } from 'vuex'
 import { getViewCache, setViewCache } from '@/utils/view-cache'
 import Author from '@/views/post/Author'
@@ -103,13 +104,22 @@ export default {
       window.scrollTo(0, 0);
       getTopicDetail(this.topic.id).then(response => {
         const { data } = response
-        document.title = data.article.title
-        this.topic = data.article
+        // =============java 版==================
+        // document.title = data.article.title
+        // this.topic = data.article
+        // this.tags = data.tags
+        // data.author.avatar += "?" + store.getters.avatarTS
+        // this.topicUser = data.author
+        // this.flag = true
+        // ======================================
+
+        // =============sql版==================
+        document.title = data.title
+        this.topic = data
         this.tags = data.tags
-        data.author.avatar += "?" + store.getters.avatarTS
-        this.topicUser = data.author
+        this.setTopicUser(data.authorId)
         this.renderMarkdown(this.topic.content)
-        this.flag = true
+        // ====================================
         if (getViewCache() != this.topic.articleId) {
           setViewCache(this.topic.articleId)
           addView(this.topic.articleId)
@@ -135,6 +145,12 @@ export default {
         }
       })
     },
+    async setTopicUser(id) {
+      const { data } = await getOpenInfo(id)
+      this.topicUser = data
+      console.log(this.topicUser)
+      this.flag = true
+    }
   }
 }
 </script>

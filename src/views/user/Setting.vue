@@ -148,7 +148,7 @@ export default {
       }
     }
   },
-  created() {
+  mounted() {
     this.fetchInfo()
   },
   methods: {

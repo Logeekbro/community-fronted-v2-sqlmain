@@ -28,7 +28,7 @@
         <vs-tabs alignment="fixed" style="z-index: 0">
           <!--用户发布的文章-->
           <vs-tab label="文  章" style="padding: 0;" @click="fetchUserById" icon="article">
-            <el-card>
+            <el-card style="height: 509.5px">
               <div v-if="loadText != ''">
                 {{ loadText }}
               </div>
@@ -80,7 +80,7 @@
 
           <!-- 关注列表 -->
           <vs-tab label="关  注" @click="fectchUserFollows" icon="group_work">
-            <el-card>
+            <el-card style="height: 509.5px; overflow-y: scroll; overflow-x: hidden;">
               <div v-if="follows.length == 0" style="text-align: center">
                 <strong>暂无关注</strong>
               </div>
@@ -111,7 +111,8 @@
                   <vs-button @click="handleDeleteAll()" color="danger" size="small" type="gradient">清除浏览记录</vs-button>
                 </div>
                 <vs-divider></vs-divider>
-                <article v-for="(item, index) in historys" :key="index" class="media">
+                <!-- java版 -->
+                <!-- <article v-for="(item, index) in historys" :key="index" class="media">
                   <div class="media-content">
                     <div class="content ellipsis is-ellipsis-1">
                       <el-tooltip :open-delay="700" class="item" effect="dark" :content="item.article.title"
@@ -137,6 +138,39 @@
                     <div class="level">
                       <div class="level-item">
                         <a @click="handleDeleteView(item.view.viewId, item.article.articleId, index)">
+                          <span class="tag is-danger">删除</span>
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </article> -->
+                <!-- sql版 -->
+                <article v-for="(item, index) in historys" :key="index" class="media">
+                  <div class="media-content">
+                    <div class="content ellipsis is-ellipsis-1">
+                      <el-tooltip :open-delay="700" class="item" effect="dark" :content="item.title"
+                        placement="top">
+                        <router-link :to="{ name: 'post-detail', params: { id: item.articleId } }">
+                          <strong>{{ item.title }}</strong>
+                        </router-link>
+                      </el-tooltip>
+                    </div>
+                    <nav class="level has-text-grey is-size-7">
+                      <div class="level-left">
+                        <span class="mr-3">
+                          作者:{{ item.nickName }}
+                        </span>
+                        <el-divider direction="vertical" />
+                        <span class="mr-1">
+                          浏览时间:{{ dayjs(item.createTime).format("YYYY/MM/DD HH:mm:ss") }}
+                        </span>
+                      </div>
+                    </nav>
+                  </div>
+                  <div class="media-right">
+                    <div class="level">
+                      <div class="level-item">
+                        <a @click="handleDeleteView(item.viewId, item.articleId, index)">
                           <span class="tag is-danger">删除</span>
                         </a>
                       </div>

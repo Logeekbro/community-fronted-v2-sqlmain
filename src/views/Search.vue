@@ -131,7 +131,7 @@ export default {
       avatarTS: store.getters.avatarTS,
     }
   },
-  created() {
+  mounted() {
     this.fetchList()
   },
   methods: {

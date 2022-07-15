@@ -2,7 +2,7 @@
   <div class="columns mt-6">
     <div class="column mt-6">
       <div class="mt-6">
-        <p class="content">404 404 404 404 404 404 404 404 404 404 404 404</p>
+        <p class="content" style="font-size: 40px">页面不存在</p>
         <p class="content subtitle mt-6">
           <!-- 页面不存在， {{ times }} 秒后将返回首页! -->
         </p>

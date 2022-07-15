@@ -139,7 +139,9 @@ export default {
         this.msg.warn('请输入关键字搜索！')
         return false
       }
+      
       this.$router.push({ path: '/search?key=' + this.searchKey })
+      this.searchKey = ''
     },
     async getUserInfo() {
 

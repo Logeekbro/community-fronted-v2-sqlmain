@@ -60,25 +60,35 @@ export default {
     fetchTopic() {
       getTopicDetail(this.$route.params.id).then((value) => {
         const { data } = value
-        this.topic = data.article;
-        this.tags = data.tags;
-        if(data.author.userId != store.getters.user.userId){
+        // ====================java 版==================
+        // if(data.author.userId != store.getters.user.userId){
+        //   window.location.href = "/"
+        //   return
+        // }
+        // this.topic = data.article;
+        // =================================================
+
+        // ===========sql 版=============================
+        if(data.authorId != store.getters.user.userId){
           window.location.href = "/"
           return
         }
+        this.topic = data;
+        // =============================================
+        this.tags = data.tags;
+        
         this.renderMarkdown(this.topic.content);
       });
     },
     handleUpdate: function () {
       this.topic.content = this.contentEditor.getValue();
-      update(this.topic).then((response) => {
-        const { data } = response;
+      update(this.topic).then(() => {
         setTimeout(() => {
           this.$router.push({
             name: "post-detail",
             params: { id: this.topic.articleId },
           });
-        }, 100);
+        }, 1);
       });
     },
     resetForm(formName) {

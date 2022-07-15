@@ -165,7 +165,7 @@ export default {
         handleInitPoen() {
             let targetId = this.targetId
             // 带id时进行的操作
-            if (targetId != 'undefined' && targetId != null && targetId.trim() != '') {
+            if (targetId != 'undefined' && targetId != null && targetId.trim() != '' && targetId != this.user.userId) {
                 targetId = Number(targetId)
                 if (!this.messageMap.has(targetId)) {
                     getOpenInfo(targetId).then(r => {
@@ -236,32 +236,34 @@ export default {
             }
             this.haveNewUserMessage = false
         },
-        fetchNewMessage() {
-            this.loadNewMessage()
-        },
         loadNewMessage() {
             const targetId = Number(this.targetInfo.userId)
+            // 获取当前active聊天的未读消息
             const unReadMessageList = this.unReadMessageMap.get(targetId)
             if (unReadMessageList != null && unReadMessageList.length > 0) {
                 if (this.messageMap.get(targetId) != null) {
+                    // 如果原来有消息，则将新消息拼接到原消息的末尾
                     this.messageMap.set(targetId, this.messageMap.get(targetId).concat(unReadMessageList))
                 }
                 else {
+                    // 否则直接将新消息赋值给消息列表
                     this.messageMap.set(targetId, unReadMessageList)
                 }
-                this.unReadMessageMap.set(targetId, [])
+                this.$nextTick(() => {
+                    // 将未读消息置为空
+                    this.unReadMessageMap.set(targetId, [])
+                    const id = `messageContainer-${this.targetInfo.userId}`
+                    const div = document.getElementById(id)
+                    updateReadStatus(this.targetInfo.userId)
+                    // 只有当滚动条到底部的距离小于1000时才滚动到底部，防止用户在浏览历史消息时直接滚动到底部
+                    if (div.scrollHeight - div.scrollTop <= 1000) {
+                        this.scrollMessageBoxToBottom()
+                    }
+                    this.checkHaveNewUserMessage()
+                })
+
             }
-            this.$nextTick(() => {
-                var id = `messageContainer-${this.targetInfo.userId}`
-                var div = document.getElementById(id)
-                // console.log(div.scrollHeight - div.scrollTop)
-                updateReadStatus(this.targetInfo.userId)
-                // 只有当滚动条到底部的距离小于1000时才滚动到底部，防止用户在浏览历史消息时直接滚动到底部
-                if (div.scrollHeight - div.scrollTop <= 1000) {
-                    this.scrollMessageBoxToBottom()
-                }
-                this.checkHaveNewUserMessage()
-            })
+
         },
         async translateNewMessageToMap() {
             const { data } = await getAllUnReadMessage()
@@ -274,8 +276,8 @@ export default {
         },
         scrollMessageBoxToBottom() {
             this.$nextTick(() => {
-                var id = `messageContainer-${this.targetInfo.userId}`
-                var div = document.getElementById(id)
+                const id = `messageContainer-${this.targetInfo.userId}`
+                const div = document.getElementById(id)
                 div.scrollTop = div.scrollHeight
             })
         },
@@ -303,32 +305,33 @@ export default {
 .message-body {
     border-radius: 0;
 }
+
 /*滚动条*/
 .chat-scroll {
-  height: 612px;
-  overflow-x: hidden;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: auto;
+    height: 612px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: auto;
 }
 
 /* 定义滚动条样式 */
 ::-webkit-scrollbar {
-  width: 5px;
-  height: 10px;
-  background-color: #195fab;
+    width: 5px;
+    height: 10px;
+    background-color: #e4e7ea;
 }
 
 /*定义滚动条轨道 内阴影+圆角*/
 ::-webkit-scrollbar-track {
-  box-shadow: inset 0 0 0px #195fab;
-  border-radius: 10px;
-  background-color: #195fab;
+    box-shadow: inset 0 0 0px #e2e4e7;
+    border-radius: 10px;
+    background-color: #e4e7ea;
 }
 
 /*定义滑块 内阴影+圆角*/
 ::-webkit-scrollbar-thumb {
-  border-radius: 10px;
-  box-shadow: inset 0 0 0px rgba(240, 240, 240, .5);
-  background-color: rgba(240, 240, 240, .5);
+    border-radius: 10px;
+    box-shadow: inset 0 0 0px rgba(240, 240, 240, .5);
+    background-color: #167df0;
 }
 </style>

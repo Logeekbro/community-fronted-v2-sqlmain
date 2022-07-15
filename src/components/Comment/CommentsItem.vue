@@ -132,7 +132,7 @@ export default {
       onLoading: false
     }
   },
-  created() {
+  mounted() {
     this.getReplyCounts()
   },
   methods: {

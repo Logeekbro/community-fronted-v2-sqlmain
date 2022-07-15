@@ -85,14 +85,31 @@ export function getArticleCount(id) {
 }
 
 // 用户浏览记录
+
+// java版
+// export function getUserHistory(current, size){
+//   const params = {
+//     current: current,
+//     size: size
+//   }
+//   return request({
+//     url: `/${start}/history/${store.getters.token}`,
+//     method: 'get',
+//     params: params
+//   })
+// }
+
+// sql版
 export function getUserHistory(current, size){
   const params = {
     current: current,
     size: size
   }
   return request({
-    url: `/${start}/history/${store.getters.token}`,
+    url: `/view/history/${store.getters.token}`,
     method: 'get',
     params: params
   })
 }
+
+

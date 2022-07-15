@@ -8,47 +8,11 @@
               <strong>暂无数据</strong>
             </vs-divider>
             <article v-else v-for="(item, index) in articleList" :key="index" class="media">
-              <div class="media-left">
-                <!-- <figure class="image is-48x48">
-                  <img :src="item.author.avatar + '?' + avatarTS" style="border-radius: 5px;">
-                </figure> -->
-                <a-avatar shape="square" :size="48" :src="item.author.avatar + '?' + avatarTS" />
-              </div>
-              <div class="media-content">
-                <div class="">
-                  <p class="ellipsis is-ellipsis-1">
-                    <el-tooltip :open-delay="500" class="item" effect="dark" :content="item.article.title"
-                      placement="top">
-                      <router-link :to="{ name: 'post-detail', params: { id: item.article.articleId } }">
-                        <span class="is-size-6"><strong>{{ item.article.title }}</strong></span>
-                      </router-link>
-                    </el-tooltip>
-                  </p>
-                </div>
-                <nav class="level has-text-grey is-mobile  is-size-7 mt-2">
-                  <div class="level-left">
-                    <div class="level-left">
-                      <router-link class="level-item" :to="{ path: `/member/${item.author.userId}/home` }">
-                        {{ item.author.nickName }}
-                      </router-link>
+              <!-- java 版 -->
+              <!-- <article-preview :article="item.article" :author="item.author" :tags="item.tags"></article-preview> -->
 
-                      <span class="mr-1">
-                        发布于:{{ dayjs(item.article.createTime).format("YYYY/MM/DD HH:mm") }}
-                      </span>
-
-                      <span v-for="(tag, index) in item.tags" :key="index"
-                        class="tag is-hidden-mobile is-success is-light mr-1">
-                        <router-link :to="{ name: 'tag', params: { name: tag } }">
-                          {{ "#" + tag }}
-                        </router-link>
-                      </span>
-
-                      <span class="is-hidden-mobile">浏览:{{ item.article.viewCount }}</span>
-                    </div>
-                  </div>
-                </nav>
-              </div>
-              <div class="media-right" />
+              <!-- sql 版 -->
+              <article-preview :article="item" :author="item" :tags="item.tags"></article-preview>
             </article>
           </el-tab-pane>
           <el-tab-pane label="热门文章" name="popular">
@@ -56,44 +20,11 @@
               <strong>暂无数据</strong>
             </vs-divider>
             <article v-else v-for="(item, index) in articleList" :key="index" class="media">
-              <div class="media-left">
-                <a-avatar shape="square" :size="48" :src="item.author.avatar + '?' + avatarTS" />
-              </div>
-              <div class="media-content">
-                <div class="">
-                  <p class="ellipsis is-ellipsis-1">
-                    <el-tooltip :open-delay="700" class="item" effect="dark" :content="item.article.title"
-                      placement="top">
-                      <router-link :to="{ name: 'post-detail', params: { id: item.article.articleId } }">
-                        <span class="is-size-6"><strong>{{ item.article.title }}</strong></span>
-                      </router-link>
-                    </el-tooltip>
-                  </p>
-                </div>
-                <nav class="level has-text-grey is-mobile  is-size-7 mt-2">
-                  <div class="level-left">
-                    <div class="level-left">
-                      <router-link class="level-item" :to="{ path: `/member/${item.author.userId}/home` }">
-                        {{ item.author.nickName }}
-                      </router-link>
-
-                      <span class="mr-1">
-                        发布于:{{ dayjs(item.article.createTime).format("YYYY/MM/DD HH:mm") }}
-                      </span>
-
-                      <span v-for="(tag, index) in item.tags" :key="index"
-                        class="tag is-hidden-mobile is-success is-light mr-1">
-                        <router-link :to="{ name: 'tag', params: { name: tag } }">
-                          {{ "#" + tag }}
-                        </router-link>
-                      </span>
-
-                      <span class="is-hidden-mobile">浏览:{{ item.article.viewCount }}</span>
-                    </div>
-                  </div>
-                </nav>
-              </div>
-              <div class="media-right" />
+              <!-- java 版 -->
+              <!-- <article-preview :article="item.article" :author="item.author" :tags="item.tags"></article-preview> -->
+              
+              <!-- sql 版 -->
+              <article-preview :article="item" :author="item" :tags="item.tags"></article-preview>
             </article>
           </el-tab-pane>
         </el-tabs>
@@ -104,17 +35,6 @@
           <strong><a @click="loadMore">点击加载更多</a></strong>
         </div>
       </vs-divider>
-
-
-      <!-- <strong><a @click="loadMore">点击加载更多</a></strong> -->
-      <!--分页-->
-      <!-- <pagination
-        v-show="page.total > 0"
-        :total="page.total"
-        :page.sync="page.current"
-        :limit.sync="page.size"
-        @pagination="init(tab)"
-      /> -->
     </el-card>
   </div>
 </template>
@@ -122,11 +42,12 @@
 <script>
 import { getList } from '@/api/post'
 import Pagination from '@/components/Pagination'
+import ArticlePreview from '@/components/Article/ArticlePreview'
 import store from '@/store'
 
 export default {
   name: 'TopicList',
-  components: { Pagination },
+  components: { Pagination, ArticlePreview },
   data() {
     return {
       activeName: 'latest',
@@ -141,7 +62,7 @@ export default {
       hasMore: true
     }
   },
-  created() {
+  mounted() {
     this.init(this.tab)
   },
   methods: {

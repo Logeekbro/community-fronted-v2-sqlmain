@@ -50,7 +50,7 @@ export default {
 <style scoped>
 
 footer {
-  margin-top: 100px;
+  margin-top: 50px;
   height: 30px;
 }
 footer a{
