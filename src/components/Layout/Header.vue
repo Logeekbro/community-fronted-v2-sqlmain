@@ -56,6 +56,11 @@
                 🧘 个人中心
               </b-navbar-item>
               <hr class="dropdown-divider">
+              <b-navbar-item tag="router-link" :to="{ path: `/history` }">
+                ⏳ 浏览记录
+                <!-- <vs-icon icon="history" style="margin-right: 5px"></vs-icon> 浏览记录 -->
+              </b-navbar-item>
+              <hr class="dropdown-divider">
               <b-navbar-item tag="router-link" :to="{ path: `/message` }">
                 <el-badge :hidden="unReadCount <= 0" :value="unReadCount" :max="99" class="item">
                   📧 消息中心

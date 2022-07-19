@@ -51,7 +51,7 @@ export default {
 
 footer {
   margin-top: 50px;
-  height: 30px;
+  padding: 0;
 }
 footer a{
   color: #bfbfbf;

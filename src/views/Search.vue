@@ -7,7 +7,7 @@
       </div>
       <b-tabs type="is-boxed" v-model="activeTab">
         <b-tab-item>
-          <template #header>
+          <template #header :disabled="articleList == null || articleList.length == 0">
             <vs-icon icon="article"></vs-icon>
             <span> 文章 <b-tag rounded> {{ articleList.length }} </b-tag> </span>
           </template>
@@ -62,8 +62,8 @@
 
         <b-tab-item>
           <template #header>
-            <vs-icon icon="label"></vs-icon>
-            <span> 标签 <b-tag rounded> {{ tagList.length }} </b-tag> </span>
+              <vs-icon icon="label"></vs-icon>
+              <span> 标签 <b-tag rounded> {{ tagList.length }} </b-tag> </span>
           </template>
           <vs-list>
             <a :href="`/tag/${item.tagName}`" v-for="(item, index) in tagList" :key="index">
@@ -170,7 +170,7 @@ export default {
     highlightKeyword(title) {
       return title.replaceAll(this.articleQuery.keyword, "<strong style='color: rgba(31,116,255,1)'>" + this.articleQuery.keyword + "</strong>")
     },
-    getInfoCount(){
+    getInfoCount() {
       const count = this.articleList.length + this.tagList.length + this.userList.length
       return count
     }

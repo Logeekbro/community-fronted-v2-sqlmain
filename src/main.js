@@ -13,7 +13,7 @@ import 'material-icons/iconfont/material-icons.css';
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 // AntDesign
-import { Avatar, Anchor, List, Menu, Layout, Badge } from 'ant-design-vue';
+import { Avatar, Anchor, List, Menu, Layout, Badge, Popconfirm } from 'ant-design-vue';
 import 'ant-design-vue/dist/antd.css';
 import '@/assets/app.css'
 import './assets/plugins/font-awesome-4.7.0/css/font-awesome.min.css'
@@ -48,6 +48,7 @@ Vue.use(List)
 Vue.use(Menu)
 Vue.use(Layout)
 Vue.use(Badge)
+Vue.use(Popconfirm)
 
 Vue.config.productionTip = false
 

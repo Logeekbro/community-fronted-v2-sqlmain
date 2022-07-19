@@ -38,7 +38,9 @@
             </router-link>
             <a class="level-item">
               <!-- <span class="tag" @click="handleDelete(topic.articleId)">删除</span> -->
-              <b-tag type="is-danger" @click="handleDelete(topic.articleId)">删除</b-tag>
+              <a-popconfirm title="确定要删除该文章吗?" ok-text="确认" cancel-text="取消" @confirm="handleDelete(topic.articleId)">
+                <b-tag type="is-danger">删除</b-tag>
+              </a-popconfirm>
             </a>
           </div>
         </nav>

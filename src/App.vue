@@ -4,7 +4,7 @@
       <Header></Header>
     </div>
 
-    <div class="container context">
+    <div class="container context" style="min-height: 550px">
         <router-view :key="this.$route.fullPath"></router-view>
     </div>
 

@@ -33,7 +33,9 @@
                 {{ loadText }}
               </div>
               <div v-if="topics.length === 0">
-                暂无
+                <el-empty description="暂无文章">
+                  <a v-if="topicUser.userId == user.userId" href="/post/create" style="color: blue">点击去发表</a>
+                </el-empty>
               </div>
               <div v-else class="topicUser-info">
                 <article v-for="(item, index) in topics" :key="index" class="media">
@@ -64,9 +66,12 @@
                         </router-link>
                       </div>
                       <div class="level-item">
-                        <a @click="handleDelete(item.articleId)">
-                          <span class="tag is-danger">删除</span>
-                        </a>
+                        <a-popconfirm title="确定要删除该文章吗?" ok-text="确认" cancel-text="取消"
+                          @confirm="handleDelete(item.articleId)">
+                          <a>
+                            <span class="tag is-danger">删除</span>
+                          </a>
+                        </a-popconfirm>
                       </div>
                     </div>
                   </div>
@@ -79,10 +84,11 @@
           </vs-tab>
 
           <!-- 关注列表 -->
-          <vs-tab label="关  注" @click="fectchUserFollows" icon="group_work">
+          <vs-tab style="padding: 0" label="关  注" @click="fectchUserFollows" icon="group_work">
             <el-card style="height: 509.5px; overflow-y: scroll; overflow-x: hidden;">
               <div v-if="follows.length == 0" style="text-align: center">
-                <strong>暂无关注</strong>
+                <el-empty description="暂无关注">
+                </el-empty>
               </div>
               <vs-list v-else>
                 <a :href="`/member/${item.userId}/home`" v-for="(item, index) in follows" :key="index">
@@ -95,94 +101,6 @@
               </vs-list>
             </el-card>
           </vs-tab>
-
-          <!-- 浏览历史记录 -->
-          <vs-tab label="浏  览  记  录" v-if="topicUser.userId == user.userId" @click="fetchUserHistory" icon="history">
-            <el-card>
-              <div v-if="loadText != ''">
-                {{ loadText }}
-              </div>
-              <div v-if="historys.length === 0" style="text-align: center">
-                <strong>无浏览记录</strong>
-              </div>
-              <div v-else class="topicUser-info">
-                <div style="margin-bottom: 20px" class="level-right">
-                  <!-- <vs-button color="danger" type="flat">清除浏览记录</vs-button> -->
-                  <vs-button @click="handleDeleteAll()" color="danger" size="small" type="gradient">清除浏览记录</vs-button>
-                </div>
-                <vs-divider></vs-divider>
-                <!-- java版 -->
-                <!-- <article v-for="(item, index) in historys" :key="index" class="media">
-                  <div class="media-content">
-                    <div class="content ellipsis is-ellipsis-1">
-                      <el-tooltip :open-delay="700" class="item" effect="dark" :content="item.article.title"
-                        placement="top">
-                        <router-link :to="{ name: 'post-detail', params: { id: item.article.articleId } }">
-                          <strong>{{ item.article.title }}</strong>
-                        </router-link>
-                      </el-tooltip>
-                    </div>
-                    <nav class="level has-text-grey is-size-7">
-                      <div class="level-left">
-                        <span class="mr-3">
-                          作者:{{ item.author.nickName }}
-                        </span>
-                        <el-divider direction="vertical" />
-                        <span class="mr-1">
-                          浏览时间:{{ dayjs(item.view.createTime).format("YYYY/MM/DD HH:mm:ss") }}
-                        </span>
-                      </div>
-                    </nav>
-                  </div>
-                  <div class="media-right">
-                    <div class="level">
-                      <div class="level-item">
-                        <a @click="handleDeleteView(item.view.viewId, item.article.articleId, index)">
-                          <span class="tag is-danger">删除</span>
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                </article> -->
-                <!-- sql版 -->
-                <article v-for="(item, index) in historys" :key="index" class="media">
-                  <div class="media-content">
-                    <div class="content ellipsis is-ellipsis-1">
-                      <el-tooltip :open-delay="700" class="item" effect="dark" :content="item.title"
-                        placement="top">
-                        <router-link :to="{ name: 'post-detail', params: { id: item.articleId } }">
-                          <strong>{{ item.title }}</strong>
-                        </router-link>
-                      </el-tooltip>
-                    </div>
-                    <nav class="level has-text-grey is-size-7">
-                      <div class="level-left">
-                        <span class="mr-3">
-                          作者:{{ item.nickName }}
-                        </span>
-                        <el-divider direction="vertical" />
-                        <span class="mr-1">
-                          浏览时间:{{ dayjs(item.createTime).format("YYYY/MM/DD HH:mm:ss") }}
-                        </span>
-                      </div>
-                    </nav>
-                  </div>
-                  <div class="media-right">
-                    <div class="level">
-                      <div class="level-item">
-                        <a @click="handleDeleteView(item.viewId, item.articleId, index)">
-                          <span class="tag is-danger">删除</span>
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                </article>
-              </div>
-              <!-- 分页 -->
-              <pagination v-show="historys.length > 0" class="mt-5" :total="historyPage.total"
-                :page.sync="historyPage.current" :limit.sync="historyPage.size" @pagination="fetchUserHistory()" />
-            </el-card>
-          </vs-tab>
         </vs-tabs>
       </div>
     </div>
@@ -191,9 +109,7 @@
 
 <script>
 import { getOpenInfo, getFollows } from '@/api/user'
-import { getInfoByName, deleteTopic, getUserHistory } from '@/api/post'
-import { deleteView, deleteAll } from '@/api/view'
-import { getViewCache, setViewCache } from '@/utils/view-cache'
+import { getInfoByName, deleteTopic } from '@/api/post'
 import pagination from '@/components/Pagination/index'
 import FollowButton from '@/components/Follow/FollowButton'
 import { mapGetters } from 'vuex'
@@ -267,43 +183,8 @@ export default {
         }
       })
     },
-    async fetchUserHistory(event, current = this.historyPage.current, size = this.historyPage.size) {
-      getUserHistory(current, size).then((rep) => {
-        const { data } = rep
-        this.historyPage = data
-        this.historys = data.records
-      })
-    },
-    handleDeleteView(id, articleId, index) {
-      deleteView(id).then((rep) => {
-        this.historys.splice(index, 1)
-        if (getViewCache() == articleId) setViewCache("-1")
-        this.msg.success("删除成功")
-      })
-    },
-    handleDeleteAll() {
-      this.$buefy.dialog.confirm({
-        title: '清除所有记录',
-        message: '确定要清除所有记录吗？数据将无法恢复',
-        confirmText: '确认',
-        cancelText: '取消',
-        type: 'is-danger',
-        onConfirm: () => this.doDeleteAll()
-      })
-    },
-    doDeleteAll() {
-      deleteAll().then(v => {
-        this.msg.success("清除成功")
-        setViewCache("-1")
-        this.historys = []
-      })
-    },
     handleCreateChat(userId) {
       this.$router.push({ path: '/message?targetId=' + userId })
-      // initChat(userId).then(r => {
-      //   this.$router.push({ path: '/message?targetId=' + userId })
-      // })
-
     }
   }
 }

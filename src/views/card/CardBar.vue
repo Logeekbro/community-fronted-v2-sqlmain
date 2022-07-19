@@ -4,10 +4,10 @@
     <login-welcome />
 
     <!--今日赠言-->
-    <tip-card />
+    <!-- <tip-card /> -->
 
     <!--资源推介-->
-    <PromotionCard />
+    <!-- <PromotionCard /> -->
   </section>
 </template>
 

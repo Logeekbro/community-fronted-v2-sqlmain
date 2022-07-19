@@ -81,6 +81,12 @@ const routes = [
     meta: {title: '消息中心', requireAuth: true}
   },
   {
+    name: 'user-history',
+    path: '/history',
+    component: () => import('@/views/user/History'),
+    meta: {title: '浏览记录', requireAuth: true}
+  },
+  {
     path: "/404",
     name: "404",
     component: () => import("@/views/error/404"),

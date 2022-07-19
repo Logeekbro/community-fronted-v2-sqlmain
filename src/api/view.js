@@ -26,3 +26,14 @@ export function deleteAll() {
     method: 'delete'
   }))
 }
+
+// 通过日期获取浏览记录
+export function getUserHistoryByDate(dt) {
+  return request(({
+    url: `/${start}/history/date/${store.getters.token}`,
+    method: 'get',
+    params: {
+      targetDate: dt
+    }
+  }))
+}

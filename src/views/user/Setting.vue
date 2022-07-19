@@ -164,6 +164,10 @@ export default {
       console.log(tab, event)
     },
     submitForm(formName) {
+      if(this.user.nickName == null || this.user.nickName == ""){
+        this.msg.warn("昵称不能为空！")
+        return
+      }
       update(this.user).then(res => {
         this.msg.success("信息修改成功")
         this.fetchInfo()
