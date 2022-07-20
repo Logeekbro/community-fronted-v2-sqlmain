@@ -158,7 +158,7 @@ export default {
       }
       else {
         getAllUnReadCount().then(r => {
-          this.unReadCount = r.data.unReadCount
+          this.unReadCount = r.data.value
         })
       }
 

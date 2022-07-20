@@ -150,7 +150,6 @@ export default {
     async setTopicUser(id) {
       const { data } = await getOpenInfo(id)
       this.topicUser = data
-      console.log(this.topicUser)
       this.flag = true
     }
   }

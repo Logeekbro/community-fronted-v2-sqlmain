@@ -10,7 +10,7 @@
             </el-alert>
             <h3 :style="{ margin: '16px 0' }" class="level">
                 <div class="level-left">
-                    <strong style="font-size: 20px">按日期加载浏览记录</strong>
+                    <strong style="font-size: 20px">浏览记录按日期加载</strong>
                 </div>
                 <div class="level-right">
                     <vs-button @click="handleDeleteAll()" color="danger" size="small" type="gradient">清除浏览记录</vs-button>

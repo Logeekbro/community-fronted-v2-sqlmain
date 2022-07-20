@@ -37,7 +37,7 @@ export default {
             if (this.authorId != this.userId) {
                 hasFollow(this.authorId).then(value => {
                     const { data } = value
-                    this.hasFollow = data.hasFollow
+                    this.hasFollow = data.value
                 })
             }
         },

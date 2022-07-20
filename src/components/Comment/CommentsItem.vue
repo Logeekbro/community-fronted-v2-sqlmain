@@ -122,7 +122,7 @@ export default {
       replyCount: 0,
       page: {
         current: 1,
-        size: 5,
+        size: 10,
         total: 0,
         records: [],
         totalPage: 0,
@@ -228,7 +228,7 @@ export default {
     async getReplyCounts() {
       getReplyCount(this.comment.comment.commentId).then((response) => {
         const { data } = response
-        this.replyCount = data.count
+        this.replyCount = data.value
       })
     },
     handleLoadReply(e) {

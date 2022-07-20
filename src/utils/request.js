@@ -10,7 +10,7 @@ const service = axios.create({
   baseURL: process.env.VUE_APP_SERVER_URL,
 
   // baseURL: 'https://api.example.com',
-  // 超时时间 单位是ms，这里设置了5s的超时时间
+  // 超时时间 单位是ms，这里设置了10s的超时时间
   timeout: 10 * 1000
 })
 
@@ -43,8 +43,8 @@ service.interceptors.response.use(
     const res = response.data
     // 如果自定义代码不是200，则将其判断为错误。
     if (res.code !== 200) {
-      // 50008: 非法Token; 50012: 异地登录; 50014: Token失效;
-      if (res.code === 401 || res.code === 50012 || res.code === 50014) {
+      // 401: Token失效;
+      if (res.code === 401) {
         // 重新登录
         MessageBox.confirm('您可以留在当前页面，或重新登录', res.message, {
           confirmButtonText: '确定',
@@ -59,13 +59,10 @@ service.interceptors.response.use(
       else if(res.code === 404){
         setTimeout(window.location.href = "/404", 1500)
       }
-      else { // 其他异常直接提示
-        // Message({
-        //   showClose: true,
-        //   message: res.message || 'Error',
-        //   type: 'error',
-        //   duration: 2 * 1000
-        // })
+      else if(res.code === 400){
+        MyMsg.error("参数有误", 1500)
+      }
+      else {
         MyMsg.error(res.message || 'Error', 2000)
 
       }
@@ -76,14 +73,16 @@ service.interceptors.response.use(
   },
   error => {
     /** *** 接收到异常响应的处理开始 *****/
-    // console.log('err' + error) // for debug
-    // Message({
-    //   showClose: true,
-    //   message: error.message,
-    //   type: 'error',
-    //   duration: 2 * 1000
-    // })
-    MyMsg.error(error.message, 2000)
+    if(error.response != null && error.response.status == 400) {
+      MyMsg.error("参数有误", 2000)
+    }
+    else if(error.response != null && error.response.status == 500){
+      MyMsg.error("服务器异常!", 2000)
+    }
+    else{
+      MyMsg.error("寄!", 2000)
+    }
+    
     return Promise.reject(error)
   }
 )
