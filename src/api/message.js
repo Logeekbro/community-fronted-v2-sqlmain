@@ -5,7 +5,7 @@ const start = "message"
 
 // 发送消息
 export function sendMessage(message) {
-    message.userToken = store.getters.token
+    // message.userToken = store.getters.token
     return request({
         url: `/${start}/send`,
         method: 'post',
@@ -16,7 +16,7 @@ export function sendMessage(message) {
 // 获取用户所有已读消息
 export function getAllMessage() {
     return request({
-        url: `/${start}/all/${store.getters.token}`,
+        url: `/${start}/all`,
         method: 'get'
     })
 }
@@ -24,7 +24,7 @@ export function getAllMessage() {
 // 获取所有未读消息
 export function getAllUnReadMessage() {
     return request({
-        url: `/${start}/unRead/all/${store.getters.token}`,
+        url: `/${start}/unRead/all`,
         method: 'get',
     })
 }
@@ -32,7 +32,7 @@ export function getAllUnReadMessage() {
 // 告诉后端消息已读取
 export function updateReadStatus(senderId) {
     return request({
-        url: `/${start}/hasRead/${senderId}/${store.getters.token}`,
+        url: `/${start}/hasRead/${senderId}`,
         method: 'put',
     })
 }
@@ -40,7 +40,7 @@ export function updateReadStatus(senderId) {
 // 获取所有未读消息数
 export function getAllUnReadCount() {
     return request({
-        url: `/${start}/unReadCount/all/${store.getters.token}`,
+        url: `/${start}/unReadCount/all`,
         method: 'get',
     })
 }

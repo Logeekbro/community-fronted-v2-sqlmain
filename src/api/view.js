@@ -6,7 +6,7 @@ const start = "view"
 // 记录浏览历史
 export function addView(id) {
   return request(({
-    url: `/${start}/${id}/${store.getters.token}`,
+    url: `/${start}/${id}`,
     method: 'post'
   }))
 }
@@ -14,7 +14,7 @@ export function addView(id) {
 // 删除浏览历史
 export function deleteView(id){
   return request(({
-    url: `/${start}/${id}/${store.getters.token}`,
+    url: `/${start}/${id}`,
     method: 'delete'
   }))
 }
@@ -22,7 +22,7 @@ export function deleteView(id){
 // 删除所有浏览历史
 export function deleteAll() {
   return request(({
-    url: `/${start}/all/${store.getters.token}`,
+    url: `/${start}/all`,
     method: 'delete'
   }))
 }
@@ -30,7 +30,7 @@ export function deleteAll() {
 // 通过日期获取浏览记录
 export function getUserHistoryByDate(dt) {
   return request(({
-    url: `/${start}/history/date/${store.getters.token}`,
+    url: `/${start}/history/date`,
     method: 'get',
     params: {
       targetDate: dt

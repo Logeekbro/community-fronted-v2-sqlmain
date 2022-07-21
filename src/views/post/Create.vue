@@ -92,9 +92,9 @@ export default {
             setTimeout(() => {
               this.$router.push({
                 name: 'post-detail',
-                params: { id: data.id }
+                params: { id: data.value }
               })
-            }, 50)
+            }, 1)
           })
         } else {
           console.log('error submit!!')

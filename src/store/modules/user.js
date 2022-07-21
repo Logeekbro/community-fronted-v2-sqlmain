@@ -27,12 +27,12 @@ const actions = {
       login({ account: name.trim(), password: pass })
         .then((response) => {
           const { data } = response;
-          commit("SET_TOKEN_STATE", data.userToken);
+          commit("SET_TOKEN_STATE", data.value);
           if(rememberMe){
-            setToken(data.userToken);
+            setToken(data.value);
           }
           else{
-            setTokenTemp(data.userToken)
+            setTokenTemp(data.value)
           }
           resolve();
         })
@@ -66,14 +66,13 @@ const actions = {
   // 注销
   logout({ commit, state }) {
     return new Promise((resolve, reject) => {
-      logout(state.token)
+      logout()
         .then((response) => {
           console.log(response);
           commit("SET_TOKEN_STATE", "");
           commit("SET_USER_STATE", "");
           removeToken();
           resolve();
-          window.location.href = "/login";
         })
         .catch((error) => {
           reject(error);

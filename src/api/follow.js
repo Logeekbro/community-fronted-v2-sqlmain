@@ -4,7 +4,7 @@ import store from '@/store'
 // 关注
 export function follow(id) {
   return request(({
-    url: `/follow/${id}/${store.getters.token}`,
+    url: `/follow/${id}`,
     method: 'post'
   }))
 }
@@ -12,7 +12,7 @@ export function follow(id) {
 // 取消关注
 export function unFollow(id) {
   return request(({
-    url: `/follow/${id}/${store.getters.token}`,
+    url: `/follow/${id}`,
     method: 'delete'
   }))
 }

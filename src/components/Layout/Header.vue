@@ -123,7 +123,6 @@ export default {
     } else {
       disableDarkMode()
     }
-    console.log(store.getters.token)
     if (store.getters.token != null && store.getters.token != '') {
       this.getMessageCount()
       this.cycleGetMessageCount()

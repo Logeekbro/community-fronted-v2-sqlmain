@@ -5,7 +5,7 @@ import store from '@/store'
 // 添加回复
 export function addReply(commentId, content, target){
     return request(({
-        url:`/reply/${commentId}/${store.getters.token}`,
+        url:`/reply/${commentId}`,
         method: "post",
         data: {
             target: target,
@@ -30,7 +30,7 @@ export function getReplyList(commentId, current, size){
 // 删除回复
 export function deleteReplyById(replyId){
     return request(({
-        url: `/reply/${replyId}/${store.getters.token}`,
+        url: `/reply/${replyId}`,
         method: "delete"
     }))
 }

@@ -20,23 +20,15 @@ export function login(data) {
 }
 // 登录后获取前台用户信息
 export function getUserInfo() {
-  const params = {
-    userToken: store.getters.token
-  }
   return request({
     url: '/user/info',
     method: 'get',
-    params: params
   })
 }
 // 前台用户注销
-export function logout(token) {
-  const params = {
-    userToken: token
-  }
+export function logout() {
   return request({
     url: '/user/logout',
     method: 'delete',
-    params: params
   })
 }

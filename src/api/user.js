@@ -21,18 +21,13 @@ export function getFollows(userId){
 
 // 用户设置中心信息
 export function getInfo() {
-  const params = {
-    userToken: store.getters.token
-  }
   return request({
     url: `/user/info/detail`,
     method: 'get',
-    params: params
   })
 }
 // 更新
 export function update(user) {
-  user.userToken = store.getters.token
   return request({
     url: '/user/info',
     method: 'put',
@@ -43,7 +38,7 @@ export function update(user) {
 // 修改密码
 export function updatePassword(passwordForm){
   return request({
-    url: `/user/password/${passwordForm.oldPassword}/${passwordForm.newPassword}/${store.getters.token}`,
+    url: `/user/password/${passwordForm.oldPassword}/${passwordForm.newPassword}`,
     method: 'put',
   })
 }

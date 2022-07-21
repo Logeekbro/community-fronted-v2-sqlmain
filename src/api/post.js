@@ -1,8 +1,7 @@
 import request from '@/utils/request'
 import store from '@/store'
 
-// 列表
-const userToken = store.getters.token
+
 const start = "article"
 
 // 用户主页文章列表
@@ -29,7 +28,6 @@ export function getList(pageNo, size, type) {
 
 // 发布
 export function post(topic) {
-  topic.userToken = store.getters.token;
   return request({
     url: `/${start}/`,
     method: 'post',
@@ -44,6 +42,7 @@ export function getTopicDetail(id) {
     method: 'get',
   })
 }
+
 // 获取详情页推荐
 export function getRecommendTopics(id) {
   return request({
@@ -57,7 +56,6 @@ export function getRecommendTopics(id) {
 
 // 更新
 export function update(topic) {
-  topic.userToken = store.getters.token
   return request({
     url: `/${start}/`,
     method: 'put',
@@ -65,14 +63,11 @@ export function update(topic) {
   })
 }
 
+// 删除
 export function deleteTopic(id) {
-  const data = {
-    userToken: store.getters.token
-  }
   return request({
     url: `/${start}/${id}`,
     method: 'delete',
-    params: data
   })
 }
 

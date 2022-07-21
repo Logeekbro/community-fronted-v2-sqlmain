@@ -54,7 +54,7 @@
                     </div>
                 </a-list-item>
             </a-list>
-            <div style="font-size: 15px;text-align: center;margin-top: 20px">
+            <div style="font-size: 15px;text-align: center;margin-top: 20px; margin-bottom: 130px;">
                 <strong>{{ loadText }}</strong>
             </div>
         </div>
