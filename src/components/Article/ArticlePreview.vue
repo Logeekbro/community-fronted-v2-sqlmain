@@ -1,7 +1,7 @@
 <template>
     <div class="media">
         <div class="media-left">
-            <a-avatar shape="square" :size="48" :src="author.avatar + '?' + avatarTS" />
+            <user-avatar :userId="author.authorId" :size="48" :shape="'square'"></user-avatar>
         </div>
         <div class="media-content">
             <div class="">
@@ -40,12 +40,13 @@
 </template>
 
 <script>
-import store from '../../store';
+import UserAvatar from '@/components/User/Avatar'
 
 
 
 export default {
     name: 'ArticlePreview',
+    components: {UserAvatar},
     props: {
         article: {
             type: Object,
@@ -62,7 +63,7 @@ export default {
     },
     data() {
         return {
-            avatarTS: store.getters.avatarTS
+            
         };
     },
     watch: {},

@@ -43,4 +43,12 @@ export function updatePassword(passwordForm){
   })
 }
 
+// 获取用户头像
+export function getAvatar(userId) {
+  return request({
+    url: `/user/open/avatar/${userId}`,
+    method: 'get'
+  })
+}
+
 

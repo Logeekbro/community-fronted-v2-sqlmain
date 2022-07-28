@@ -2,13 +2,13 @@
   <div id="tag" class="columns">
     <div class="column is-three-quarters">
       <el-card class="box-card" shadow="never">
-        <div slot="header" class="">
+        <div slot="header">
           🔍 检索到 <span class="has-text-info">{{ topics.length }}</span> 篇含有标签
           <span class="has-text-info">{{ '#' + this.$route.params.name }}</span>
           的文章
         </div>
 
-        <div class="text item">
+        <div ref="loadingBox" style="min-height: 300px" class="vs-con-loading__container">
           <article v-for="(item, index) in topics" :key="index" class="media">
               <div class="media-left">
                 <!-- <figure class="image is-48x48">
@@ -95,6 +95,7 @@
 
 <script>
 import { getTopicsByTag } from '@/api/search'
+import store from '@/store'
 
 export default {
   name: 'Tag',
@@ -106,7 +107,9 @@ export default {
         name: this.$route.params.name,
         page: 1,
         size: 10
-      }
+      },
+      avatarTS: store.getters.avatarTS,
+      showResult: false
     }
   },
   mounted() {
@@ -114,9 +117,14 @@ export default {
   },
   methods: {
     fetchList: function() {
+      this.$vs.loading({
+        container: this.$refs.loadingBox,
+        type: "corners",
+      })
       getTopicsByTag(this.paramMap).then(response => {
         const { data } = response
         this.topics = data
+        this.$vs.loading.close(this.$refs.loadingBox)
       })
     }
   }

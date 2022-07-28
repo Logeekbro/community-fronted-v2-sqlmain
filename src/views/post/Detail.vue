@@ -16,7 +16,7 @@
         </div>
 
         <!--Markdown-->
-        <div id="preview" />
+        <div ref="contentLoading" class="vs-con-loading__container" id="preview" />
 
         <!--标签-->
         <nav class="level has-text-grey is-size-7 mt-6">
@@ -70,7 +70,6 @@ import Recommend from '@/views/post/Recommend'
 import LvComments from '@/components/Comment/Comments'
 import Vditor from 'vditor'
 import 'vditor/dist/index.css'
-import store from '@/store/'
 
 export default {
   name: 'TopicDetail',
@@ -103,6 +102,10 @@ export default {
     },
     // 初始化
     fetchTopic() {
+      this.$vs.loading({
+        container: this.$refs.contentLoading,
+        type: "corners",
+      })
       window.scrollTo(0, 0);
       getTopicDetail(this.topic.id).then(response => {
         const { data } = response
@@ -121,6 +124,7 @@ export default {
         this.tags = data.tags
         this.setTopicUser(data.authorId)
         this.renderMarkdown(this.topic.content)
+        this.$vs.loading.close(this.$refs.contentLoading)
         // ====================================
         if (getViewCache() != this.topic.articleId) {
           setViewCache(this.topic.articleId)

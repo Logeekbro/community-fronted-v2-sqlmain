@@ -22,9 +22,9 @@ const mutations = {
 const actions = {
   // 用户登录
   login({ commit }, userInfo) {
-    const { name, pass, rememberMe } = userInfo;
+    const { account, password, rememberMe, accessToken } = userInfo;
     return new Promise((resolve, reject) => {
-      login({ account: name.trim(), password: pass })
+      login({ account: account.trim(), password: password, accessToken: accessToken })
         .then((response) => {
           const { data } = response;
           commit("SET_TOKEN_STATE", data.value);

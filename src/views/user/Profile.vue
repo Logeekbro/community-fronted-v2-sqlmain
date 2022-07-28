@@ -6,11 +6,12 @@
         <el-card shadow="never">
           <div slot="header" class="has-text-centered">
             <!-- <el-avatar  :fit="'fill'" :size="64" :src='topicUser.avatar' /> -->
-            <a-avatar shape="circle" :size="65" :src="topicUser.avatar" />
+            <user-avatar :size="65" :userId="topicUser.userId" :clickable="false"></user-avatar>
+            <!-- <a-avatar shape="circle" :size="65" :src="topicUser.avatar" /> -->
             <p class="mt-3"><strong>{{ topicUser.nickName }}</strong></p>
-            <br>
+            <br v-if="topicUser.userId != user.userId">
             <follow-button :authorId="topicUser.userId"></follow-button>
-            <br>
+            <br v-if="topicUser.userId != user.userId">
             <b-button v-if="topicUser.userId != user.userId" @click="handleCreateChat(topicUser.userId)"
               type="is-info is-light is-link button-center is-fullwidth">发送消息</b-button>
           </div>
@@ -94,7 +95,8 @@
                 <a :href="`/member/${item.userId}/home`" v-for="(item, index) in follows" :key="index">
                   <vs-list-item :title="item.nickName" :subtitle="'简介：' + item.introduce" style="height: 80px">
                     <template slot="avatar">
-                      <a-avatar shape="circle" :size="54" :src="item.avatar" style="margin-right: 20px" />
+                      <user-avatar :size="54" :userId="item.userId" style="margin-right: 20px"></user-avatar>
+                      <!-- <a-avatar shape="circle" :size="54" :src="item.avatar" style="margin-right: 20px" /> -->
                     </template>
                   </vs-list-item>
                 </a>
@@ -114,10 +116,11 @@ import pagination from '@/components/Pagination/index'
 import FollowButton from '@/components/Follow/FollowButton'
 import { mapGetters } from 'vuex'
 import store from '@/store'
+import UserAvatar from '@/components/User/Avatar'
 
 export default {
   name: 'Profile',
-  components: { pagination, FollowButton },
+  components: { pagination, FollowButton, UserAvatar },
   data() {
     return {
       topicUser: null,

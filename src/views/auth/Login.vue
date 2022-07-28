@@ -6,14 +6,16 @@
           用户登录
         </div>
         <div>
+          <verify :verifyVisible="verifyVisible" @handleClose="handleClose"
+            @doRealAction="loginWithToken"></verify>
           <el-form v-loading="loading" :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="100px"
             class="demo-ruleForm">
-            <el-form-item label="账号" prop="name">
-              <el-input v-model="ruleForm.name"></el-input>
+            <el-form-item label="账号" prop="account">
+              <el-input v-model="ruleForm.account"></el-input>
             </el-form-item>
 
-            <el-form-item label="密码" prop="pass">
-              <el-input type="password" v-model="ruleForm.pass" autocomplete="off"></el-input>
+            <el-form-item label="密码" prop="password">
+              <el-input type="password" v-model="ruleForm.password" autocomplete="off"></el-input>
             </el-form-item>
 
             <el-form-item label="10天免登录" prop="delivery">
@@ -32,17 +34,22 @@
 </template>
 
 <script>
+import Verify from '@/components/Verify'
+
 export default {
   name: "Login",
+  components: { Verify },
   data() {
     return {
-      redirect: undefined,
+      redirect: null,
       loading: false,
+      verifyVisible: false,
       ruleForm: {
         account: "",
         password: "",
         rememberMe: false,
       },
+      accessToken: "",
       rules: {
         account: [
           { required: true, message: "请输入账号", trigger: "blur" },
@@ -67,9 +74,15 @@ export default {
   },
   methods: {
     submitForm(formName) {
-      this.$refs[formName].validate((valid) => {
+
+      this.$refs[formName].validate(valid => {
         if (valid) {
+          if (this.accessToken == "") {
+            this.verifyVisible = true
+            return false
+          }
           this.loading = true;
+          this.ruleForm.accessToken = this.accessToken
           this.$store
             .dispatch("user/login", this.ruleForm)
             .then(() => {
@@ -81,6 +94,7 @@ export default {
             })
             .catch(() => {
               this.loading = false;
+              this.accessToken = ""
             });
         } else {
           return false;
@@ -89,7 +103,15 @@ export default {
     },
     resetForm(formName) {
       this.$refs[formName].resetFields();
+      this.accessToken = ""
     },
+    handleClose() {
+      this.verifyVisible = false
+    },
+    loginWithToken(token) {
+      this.accessToken = token
+      this.submitForm('ruleForm')
+    }
   },
 };
 </script>

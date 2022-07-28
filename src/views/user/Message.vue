@@ -15,8 +15,9 @@
                         @click="showMessageDetail(index, item)">
                         <a-badge :overflowCount="99"
                             :count.sync="unReadMessageMap.get(item.targetInfo.userId) == null ? 0 : unReadMessageMap.get(item.targetInfo.userId).length">
-                            <a-avatar shape="square" :size="40" :src="item.targetInfo.avatar"
-                                style="margin-right: 5px" />
+                            <!-- <a-avatar shape="square" :size="40" :src="item.targetInfo.avatar"
+                                style="margin-right: 5px" /> -->
+                            <user-avatar shape="square" :size="40" :userId="item.targetInfo.userId" style="margin-right: 5px"></user-avatar>
                         </a-badge>
                         <span><strong>{{ item.targetInfo.nickName }}</strong></span>
                     </a-menu-item>
@@ -35,7 +36,7 @@
 
             <a-layout-content>
                 <el-card shadow="never" style="margin-bottom: 0">
-                    <div style="height: 520px">
+                    <div style="height: 540px" ref="messageBoxLoading" class="vs-con-loading__container">
                         <!-- 消息区域 -->
                         <div v-if="targetInfo != null">
                             <div style="height: 340px; overflow-y: scroll; white-space: pre-wrap;word-break: break-all"
@@ -44,8 +45,9 @@
                                     <!-- 自己发的消息 -->
                                     <div v-if="item.senderId == user.userId" class="level-left"
                                         style="margin-bottom: 20px">
-                                        <a-avatar shape="circle" :size="36" :src="user.avatar + '?' + avatarTS"
-                                            style="margin-right: 5px" />
+                                        <user-avatar class="ava" :size="36" :userId="user.userId" :clickable="false" style="margin-left: 5px"></user-avatar>
+                                        <!-- <a-avatar shape="circle" :size="36" :src="user.avatar + '?' + avatarTS"
+                                            style="margin-right: 5px" /> -->
                                         <b-message style="width: 50%" size="is-small" type="is-success"
                                             :title="dayjs(item.createTime).format('YYYY/MM/DD HH:mm')"
                                             :closable="false">
@@ -64,10 +66,11 @@
                                                 {{ item.content }}
                                             </div>
                                         </b-message>
-                                        <router-link :to="{ path: `/member/${targetInfo.userId}/home` }">
+                                        <user-avatar :size="36" :userId="targetInfo.userId" style="margin-left: 5px"></user-avatar>
+                                        <!-- <router-link :to="{ path: `/member/${targetInfo.userId}/home` }">
                                             <a-avatar shape="circle" :size="36" :src="targetInfo.avatar"
                                                 style="margin-left: 5px" />
-                                        </router-link>
+                                        </router-link> -->
                                     </div>
                                 </div>
                             </div>
@@ -79,7 +82,6 @@
                                     :disabled="content == ''">
                                     发 送</vs-button>
                             </div>
-
                         </div>
                     </div>
                 </el-card>
@@ -93,10 +95,11 @@
 import store from '@/store'
 import { getOpenInfo } from '@/api/user'
 import { sendMessage, getAllMessage, updateReadStatus, getAllUnReadMessage } from '@/api/message'
+import UserAvatar from '@/components/User/Avatar'
 
 export default {
     name: 'message',
-    components: {},
+    components: {UserAvatar},
     data() {
         return {
             list: [],
@@ -197,11 +200,16 @@ export default {
             // document.getElementById(id).scrollIntoViewIfNeeded()
         },
         async showMessageDetail(index, item) {
+            this.$vs.loading({
+                container: this.$refs.messageBoxLoading,
+                type: "sound"
+            })
             this.targetInfo = item.targetInfo
             var id = `messageContainer-${this.targetInfo.userId}`
             this.loadNewMessage()
             this.$nextTick(() => {
                 // 数据渲染完成后的回调方法
+                this.$vs.loading.close(this.$refs.messageBoxLoading)
                 updateReadStatus(this.targetInfo.userId)
                 var div = document.getElementById(id)
                 div.scrollTop = div.scrollHeight

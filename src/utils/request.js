@@ -37,6 +37,9 @@ service.interceptors.request.use(
 // 设置cross跨域 并设置访问权限 允许跨域携带cookie信息,使用JWT可关闭
 service.defaults.withCredentials = false
 
+// 设置用户未登录时的弹窗延时，避免短时间多次弹窗
+let popTime = 0
+
 service.interceptors.response.use(
   // 接收到响应数据并成功后的一些共有的处理，关闭loading等
   response => {
@@ -45,21 +48,28 @@ service.interceptors.response.use(
     if (res.code !== 200) {
       // 401: Token失效;
       if (res.code === 401) {
-        // 重新登录
-        MessageBox.confirm('您可以留在当前页面，或重新登录', res.message, {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning',
-          center: true
-        }).then(() => {
-          removeToken();
-          window.location.href = '/login'
-        })
+        const currentTime = new Date().getTime()
+        console.log("currentTime:" + currentTime)
+        console.log("popTime:" + popTime)
+        if (currentTime - popTime > 5000) {
+          popTime = currentTime
+          // 重新登录
+          MessageBox.confirm('您可以留在当前页面，或重新登录', res.message, {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning',
+            center: true
+          }).then(() => {
+            removeToken();
+            window.location.href = '/login'
+          })
+        }
+
       }
-      else if(res.code === 404){
+      else if (res.code === 404) {
         setTimeout(window.location.href = "/404", 1500)
       }
-      else if(res.code === 400){
+      else if (res.code === 400) {
         MyMsg.error("参数有误", 1500)
       }
       else {
@@ -73,16 +83,16 @@ service.interceptors.response.use(
   },
   error => {
     /** *** 接收到异常响应的处理开始 *****/
-    if(error.response != null && error.response.status == 400) {
+    if (error.response != null && error.response.status == 400) {
       MyMsg.error("参数有误", 2000)
     }
-    else if(error.response != null && error.response.status == 500){
+    else if (error.response != null && error.response.status == 500) {
       MyMsg.error("服务器异常!", 2000)
     }
-    else{
+    else {
       MyMsg.error("寄!", 2000)
     }
-    
+
     return Promise.reject(error)
   }
 )
