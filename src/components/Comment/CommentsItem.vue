@@ -36,7 +36,8 @@
     </b-modal>
 
     <figure class="media-left">
-      <a-avatar shape="square" :size="52" :src="comment.user.avatar + '?' + ts" />
+      <user-avatar shape="square" :size="52" :userId="comment.user.userId"></user-avatar>
+      <!-- <a-avatar shape="square" :size="52" :src="comment.user.avatar + '?' + ts" /> -->
     </figure>
     <div class="media-content">
       <div class="content">
@@ -91,11 +92,13 @@ import store from '@/store'
 import { deleteComment } from '@/api/comment'
 import { addReply, getReplyList, getReplyCount } from '@/api/reply'
 import LvReplyItem from './ReplyItem'
+import UserAvatar from '@/components/User/Avatar'
 
 export default {
   name: 'LvCommentsItem',
   components: {
-    LvReplyItem
+    LvReplyItem,
+    UserAvatar
   },
   props: {
     comment: {

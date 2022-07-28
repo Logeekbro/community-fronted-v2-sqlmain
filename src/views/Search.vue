@@ -15,7 +15,8 @@
           <div>
             <article v-for="(item, index) in articleList" :key="index" class="media">
               <div class="media-left">
-                <a-avatar shape="square" :size="48" :src="item.author.avatar + '?' + avatarTS" />
+                <user-avatar shape="square" :size="48" :userId="item.author.userId" ></user-avatar>
+                <!-- <a-avatar shape="square" :size="48" :src="item.author.avatar + '?' + avatarTS" /> -->
               </div>
               <div class="media-content">
                 <div class="">
@@ -84,7 +85,8 @@
             <a :href="`/member/${item.userId}/home`" v-for="(item, index) in userList" :key="index">
               <vs-list-item :title="item.nickName" :subtitle="'简介：' + item.introduce" style="height: 80px">
                 <template slot="avatar">
-                  <a-avatar shape="circle" :size="54" :src="item.avatar" style="margin-right: 20px" />
+                  <user-avatar :size="54" :userId="item.userId" style="margin-right: 20px" ></user-avatar>
+                  <!-- <a-avatar shape="circle" :size="54" :src="item.avatar" style="margin-right: 20px" /> -->
                 </template>
               </vs-list-item>
             </a>
@@ -100,10 +102,11 @@
 import { searchByKeyword, searchByTagName, searchByUserIdOrName } from '@/api/search'
 import Pagination from '@/components/Pagination'
 import store from '@/store'
+import UserAvatar from '@/components/User/Avatar'
 
 export default {
   name: 'Search',
-  components: { Pagination },
+  components: { Pagination, UserAvatar },
   data() {
     return {
       activeTab: 0,

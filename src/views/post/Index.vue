@@ -7,34 +7,43 @@
             <vs-divider v-if="articleList == null && articleList.length == 0">
               <strong>暂无数据</strong>
             </vs-divider>
-            <article v-else v-for="(item, index) in articleList" :key="index" class="media">
+            <!-- <article v-else v-for="(item, index) in articleList" :key="index" class="media"> -->
               <!-- java 版 -->
               <!-- <article-preview :article="item.article" :author="item.author" :tags="item.tags"></article-preview> -->
 
               <!-- sql 版 -->
-              <article-preview :article="item" :author="item" :tags="item.tags"></article-preview>
-            </article>
+              <!-- <article-preview :article="item" :author="item" :tags="item.tags"></article-preview>
+            </article> -->
+
+            
+              <article-preview v-else :articleList="articleList" :listLoading="listLoading" :showLoadMore="hasMore"
+              :loadingMore="loadingMore" @doLoadMore="loadMore"></article-preview>
+            
+
+            
           </el-tab-pane>
           <el-tab-pane label="热门文章" name="popular">
             <vs-divider v-if="articleList == null && articleList.length == 0">
               <strong>暂无数据</strong>
             </vs-divider>
-            <article v-else v-for="(item, index) in articleList" :key="index" class="media">
+            <!-- <article v-else v-for="(item, index) in articleList" :key="index" class="media"> -->
               <!-- java 版 -->
               <!-- <article-preview :article="item.article" :author="item.author" :tags="item.tags"></article-preview> -->
               
               <!-- sql 版 -->
-              <article-preview :article="item" :author="item" :tags="item.tags"></article-preview>
-            </article>
+              <!-- <article-preview :article="item" :author="item" :tags="item.tags"></article-preview>
+            </article> -->
+            <article-preview v-else :articleList="articleList" :listLoading="listLoading" :showLoadMore="hasMore"
+              :loadingMore="loadingMore" @doLoadMore="loadMore"></article-preview>
           </el-tab-pane>
         </el-tabs>
 
       </div>
-      <vs-divider v-show="hasMore">
+      <!-- <vs-divider v-show="hasMore">
         <div style="text-align: center;">
           <strong><a @click="loadMore">点击加载更多</a></strong>
         </div>
-      </vs-divider>
+      </vs-divider> -->
     </el-card>
   </div>
 </template>
@@ -59,7 +68,9 @@ export default {
       },
       tab: 'latest',
       avatarTS: store.getters.avatarTS,
-      hasMore: true
+      hasMore: false,
+      listLoading: false,
+      loadingMore: false
     }
   },
   mounted() {
@@ -67,7 +78,9 @@ export default {
   },
   methods: {
     init(tab) {
+      this.listLoading = true
       getList(this.page.current, this.page.size, tab).then((response) => {
+        this.listLoading = false
         const { data } = response
         this.page.current = data.current
         this.page.total = data.total
@@ -87,8 +100,10 @@ export default {
       this.init(tab.name)
     },
     loadMore() {
+      this.loadingMore = true
       this.page.current += 1
       getList(this.page.current, this.page.size, this.tab).then((response) => {
+        this.loadingMore = false
         const { data } = response
         this.page.current = data.current
         this.page.total = data.total

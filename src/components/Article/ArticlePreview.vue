@@ -1,5 +1,5 @@
 <template>
-    <div class="media">
+    <!-- <div class="media">
         <div class="media-left">
             <user-avatar :userId="author.authorId" :size="48" :shape="'square'"></user-avatar>
         </div>
@@ -36,41 +36,136 @@
                 </div>
             </nav>
         </div>
-    </div>
+    </div> -->
+    <a-list item-layout="vertical" size="large" :data-source="articleList" :loading="listLoading">
+        <div v-if="showLoadMore" slot="loadMore"
+            :style="{ textAlign: 'center', marginTop: '12px', height: '32px', lineHeight: '32px' }">
+            <a-spin v-if="loadingMore" />
+            <a-button v-else @click="onLoadMore">
+                点击加载更多
+            </a-button>
+        </div>
+        <a-list-item slot="renderItem" key="index" slot-scope="item, index">
+            <!-- <template v-for="{ type, text } in actions" slot="actions">
+                <span :key="type">
+                    <a-icon :type="type" style="margin-right: 8px" />
+                    {{ text }}
+                </span>
+            </template> -->
+            <img slot="extra" width="272" alt="封面"
+                :src="item.mainPic == '' ? 'https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png' : item.mainPic" />
+            <div style="margin-bottom: 25px">
+                <a style="font-size: 18px" slot="title" :href="'/post/' + item.articleId"><strong>{{ item.title
+                }}</strong></a>
+                <br>
+                <div style="width: 400px;overflow:hidden;margin-top: 10px;white-space: nowrap; text-overflow: ellipsis;">
+                {{item.content}}
+                </div>
+            </div>
+            <div class="level-left">
+                <user-avatar :userId="item.authorId" :size="25" style="margin-right: 5px"></user-avatar>
+                <router-link class="level-item" :to="{ path: `/member/${item.authorId}/home` }">
+                    <strong>{{ item.nickName }}</strong>
+                </router-link>
+                <el-divider direction="vertical" />
+                <span class="mr-1">
+                    {{ ' ' + parseTime(item.createTime) }}
+                </span>
+                <br />
+            </div>
+            <div style="margin-top: 15px">
+                <span v-for="(tag, index) in item.tags" :key="index"
+                    class="tag is-hidden-mobile is-success is-light mr-1">
+                    <router-link :to="{ name: 'tag', params: { name: tag } }">
+                        {{ "#" + tag }}
+                    </router-link>
+                </span>
+            </div>
+            <div style="margin-top: 15px">
+                <h-score :articleId="item.articleId"></h-score>
+            </div>
+
+            <!-- {{ item.content }} -->
+        </a-list-item>
+    </a-list>
 </template>
 
 <script>
 import UserAvatar from '@/components/User/Avatar'
+import dayjs from 'dayjs'
+import HScore from '@/components/Article/Score'
 
 
 
 export default {
     name: 'ArticlePreview',
-    components: {UserAvatar},
+    components: { UserAvatar, HScore },
     props: {
-        article: {
-            type: Object,
-            default: {}
-        },
-        author: {
-            type: Object,
-            default: {}
-        },
-        tags: {
+        articleList: {
             type: Array,
-            default: []
+            default: null
+        },
+        listLoading: {
+            type: Boolean,
+            default: false
+        },
+        loadingMore: {
+            type: Boolean,
+            default: false
+        },
+        showLoadMore: {
+            type: Boolean,
+            default: false
         }
     },
     data() {
         return {
-            
+        
         };
     },
     watch: {},
     computed: {
-        
+
     },
-    methods: {},
+    methods: {
+        onLoadMore() {
+            this.$emit("doLoadMore")
+        },
+        parseTime(publishTime) {
+            // 拿到当前时间戳和发布时的时间戳
+            var curTime = new Date()
+            var postTime = new Date(publishTime)
+            //计算差值
+            var timeDiff = curTime.getTime() - postTime.getTime()
+            // 单位换算
+            var min = 60 * 1000
+            var hour = min * 60
+            var day = hour * 24
+            // 计算发布时间距离当前时间的 天、时、分
+            var exceedDay = Math.floor(timeDiff / day)
+            var exceedHour = Math.floor(timeDiff / hour)
+            var exceedMin = Math.floor(timeDiff / min)
+            // 最后判断时间差
+
+            if (exceedDay > 0) {
+                if (exceedDay <= 3) {
+                    return exceedDay + "天前"
+                }
+                else if (curTime.getFullYear() == postTime.getFullYear()) {
+                    return dayjs(publishTime).format("MM-DD HH:mm")
+                }
+                return dayjs(publishTime).format("YYYY-MM-DD HH:mm")
+            } else {
+                if (exceedHour < 24 && exceedHour > 0) {
+                    return exceedHour + '小时前'
+                } else if (exceedMin < 60 && exceedMin > 0) {
+                    return exceedMin + '分钟前'
+                } else {
+                    return '刚刚'
+                }
+            }
+        }
+    },
     created() { },
     mounted() {
 

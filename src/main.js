@@ -13,7 +13,7 @@ import 'material-icons/iconfont/material-icons.css';
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 // AntDesign
-import { Avatar, Anchor, List, Menu, Layout, Badge, Popconfirm, Button, Tooltip } from 'ant-design-vue';
+import Antd from 'ant-design-vue';
 import 'ant-design-vue/dist/antd.css';
 import '@/assets/app.css'
 import './assets/plugins/font-awesome-4.7.0/css/font-awesome.min.css'
@@ -42,15 +42,8 @@ Vue.filter('date', (date) => {
 Vue.use(Buefy)
 Vue.use(ElementUI)
 Vue.use(Vuesax)
-Vue.use(Avatar)
-Vue.use(Anchor)
-Vue.use(List)
-Vue.use(Menu)
-Vue.use(Layout)
-Vue.use(Badge)
-Vue.use(Popconfirm)
-Vue.use(Button)
-Vue.use(Tooltip)
+Vue.use(Antd)
+
 
 Vue.config.productionTip = false
 

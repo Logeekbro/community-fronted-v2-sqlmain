@@ -1,7 +1,7 @@
 <template>
     <el-dialog @open="initList" title="成分验证" @closed="handleClose" :visible.sync="tVV" width="30%"
      center>
-        <el-alert v-if="hasError" title="出错了" type="error" :description="errorText + '，请刷新后重试'" show-icon>
+        <el-alert v-if="hasError" :title="errorText + '，请刷新后重试'" type="error" description="" show-icon>
         </el-alert>
         <div>
             <strong>现有如下等式：</strong>

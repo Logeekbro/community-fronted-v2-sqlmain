@@ -6,7 +6,8 @@
       </div>
       <div class="has-text-centered">
         <!-- <el-avatar :fit="'fill'" :size="64" :src='user.avatar' /> -->
-        <a-avatar shape="circle" :size="65" :src="user.avatar" />
+        <user-avatar :size="65" :userId="user.userId" ></user-avatar>
+        <!-- <a-avatar shape="circle" :size="65" :src="user.avatar" /> -->
         <p class="is-size-5 mb-5">
           <router-link :to="{ path: `/member/${user.userId}/home` }">
             {{ user.nickName }} <span class="is-size-7 has-text-grey">{{ '@' + user.account }}</span>
@@ -36,10 +37,11 @@ import FollowButton from '@/components/Follow/FollowButton'
 import { getArticleCount } from '@/api/post'
 import { mapGetters } from 'vuex'
 import store from '@/store'
+import UserAvatar from '@/components/User/Avatar'
 
 export default {
   name: 'Author',
-  components: {FollowButton},
+  components: {FollowButton, UserAvatar},
   props: {
     user: {
       type: Object,
