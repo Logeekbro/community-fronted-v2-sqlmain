@@ -12,6 +12,15 @@
                 <el-input v-model="topic.title" placeholder="输入新的文章名称"></el-input>
               </el-form-item>
 
+              <div>
+                <strong style="display: block;">文章封面：</strong>
+                <el-upload class="avatar-uploader" action="" :show-file-list="false" :http-request="customRequest"
+                  :before-upload="beforeUpload">
+                  <img v-if="imageUrl" :src.sync="imageUrl" class="avatar">
+                  <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                </el-upload>
+              </div>
+
               <!--Markdown-->
               <div id="vditor" />
 
@@ -37,6 +46,12 @@ import "vditor/dist/index.css";
 import vditorConfig from '@/config/vditor';
 import store from '@/store'
 
+function getBase64(img, callback) {
+  const reader = new FileReader();
+  reader.addEventListener('load', () => callback(reader.result));
+  reader.readAsDataURL(img);
+}
+
 export default {
   name: "TopicEdit",
   components: {},
@@ -44,6 +59,8 @@ export default {
     return {
       topic: {},
       tags: [],
+      imageUrl: '',
+      submitToast: null,
     };
   },
   created() {
@@ -60,29 +77,39 @@ export default {
     fetchTopic() {
       getTopicDetail(this.$route.params.id).then((value) => {
         const { data } = value
-        // ====================java 版==================
-        // if(data.author.userId != store.getters.user.userId){
-        //   window.location.href = "/"
-        //   return
-        // }
-        // this.topic = data.article;
-        // =================================================
-
-        // ===========sql 版=============================
-        if(data.authorId != store.getters.user.userId){
+        if (data.authorId != store.getters.user.userId) {
           window.location.href = "/"
           return
         }
         this.topic = data;
-        // =============================================
+        this.imageUrl = this.topic.mainPic
         this.tags = data.tags;
-        
         this.renderMarkdown(this.topic.content);
       });
     },
+    customRequest(info) {
+      this.topic.file = info.file
+      getBase64(info.file, imageUrl => {
+        this.imageUrl = imageUrl
+      })
+    },
+    beforeUpload(file) {
+      const accept = ['image/jpg', 'image/jpeg', 'image/png']
+      const isJPG = accept.includes(file.type);
+      const isLt5M = file.size / 1024 / 1024 < 5;
+      if (!isJPG) {
+        this.msg.error('封面图片只能是 JPG/PNG 格式!', 1500);
+      }
+      if (!isLt5M) {
+        this.msg.error('封面图片大小不能超过 5MB!', 1500);
+      }
+      return isJPG && isLt5M;
+    },
     handleUpdate: function () {
+      this.submitToast = this.msg.indefiniteInfo("<i class='el-icon-loading'></i>正在处理文章...")
       this.topic.content = this.contentEditor.getValue();
       update(this.topic).then(() => {
+        this.submitToast.close()
         setTimeout(() => {
           this.$router.push({
             name: "post-detail",
@@ -102,5 +129,36 @@ export default {
 <style>
 .vditor-reset pre>code {
   font-size: 100%;
+}
+
+.mainPic {
+  width: 350px;
+  height: 200px;
+}
+.avatar-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.avatar-uploader .el-upload:hover {
+  border-color: #409EFF;
+}
+
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 350px;
+  height: 200px;
+  line-height: 200px;
+  text-align: center;
+}
+
+.avatar {
+  width: 350px;
+  height: 200px;
+  display: block;
 }
 </style>

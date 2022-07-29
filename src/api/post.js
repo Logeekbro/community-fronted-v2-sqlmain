@@ -4,6 +4,10 @@ import store from '@/store'
 
 const start = "article"
 
+const headers = {
+  'Content-Type': 'multipart/form-data'
+}
+
 // 用户主页文章列表
 export function getInfoByName(username, page, size) {
   return request({
@@ -28,10 +32,15 @@ export function getList(pageNo, size, type) {
 
 // 发布
 export function post(topic) {
+  let data = new FormData()
+  data.append("title", topic.title)
+  data.append("file", topic.file)
+  data.append("content", topic.content)
   return request({
     url: `/${start}/`,
     method: 'post',
-    data: topic
+    data: data,
+    headers: headers
   })
 }
 
@@ -56,10 +65,17 @@ export function getRecommendTopics(id) {
 
 // 更新
 export function update(topic) {
+  let data = new FormData()
+  data.append("articleId", topic.articleId)
+  data.append("authorId", topic.authorId)
+  data.append("title", topic.title)
+  data.append("file", topic.file)
+  data.append("content", topic.content)
   return request({
     url: `/${start}/`,
     method: 'put',
-    data: topic
+    data: data,
+    headers: headers
   })
 }
 

@@ -3,13 +3,22 @@
     <div class="column is-full">
       <el-card class="box-card" shadow="never">
         <div slot="header" class="clearfix">
-          <span><i class="fa fa fa-book"> 文章 / 发布文章</i></span>
+          <span><i class="fa fa fa-book"> 发布文章</i></span>
         </div>
         <div>
           <el-form ref="ruleForm" :model="ruleForm" :rules="rules" class="demo-ruleForm">
             <el-form-item prop="title">
-              <el-input v-model="ruleForm.title" placeholder="输入文章名称" />
+              <el-input ref="myTitle" v-model="ruleForm.title" placeholder="输入文章标题" />
             </el-form-item>
+
+            <div>
+              <strong style="display: block;">文章封面：</strong>
+              <el-upload class="avatar-uploader" action="" :show-file-list="false" :http-request="customRequest"
+                :before-upload="beforeUpload">
+                <img v-if="imageUrl" :src="imageUrl" class="avatar">
+                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+              </el-upload>
+            </div>
 
             <!--Markdown-->
             <div id="vditor" />
@@ -34,23 +43,32 @@ import { post } from '@/api/post'
 import Vditor from 'vditor'
 import 'vditor/dist/index.css'
 import vditorConfig from '@/config/vditor'
-// import store from '@/store';
-// import user from '@/store/modules/user'
+
+
+function getBase64(img, callback) {
+  const reader = new FileReader();
+  reader.addEventListener('load', () => callback(reader.result));
+  reader.readAsDataURL(img);
+}
+
 export default {
   name: 'TopicPost',
   data() {
     return {
       contentEditor: {},
       ruleForm: {
-        title: '', // 标题
-        tags: [], // 标签
-        content: '' // 内容
+        title: '',
+        tags: [],
+        content: '',
+        file: null
       },
+      submitToast: null,
+      imageUrl: '',
       rules: {
         title: [
-          { required: true, message: '请输入文章名称', trigger: 'blur' },
+          { required: false, message: '请输入文章标题', trigger: 'blur' },
           {
-            min: 1,
+            min: 0,
             max: 50,
             message: '长度在 1 到 50 个字符',
             trigger: 'change'
@@ -67,6 +85,18 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
+
+          if (this.ruleForm.title == "") {
+            this.msg.warn("请输入文章标题")
+            window.scrollTo(0, 0)
+            this.$refs.myTitle.focus()
+            return false
+          }
+          if (this.ruleForm.file == null) {
+            this.msg.warn("请上传文章封面")
+            window.scrollTo(0, 0)
+            return false
+          }
           const content = this.contentEditor.getValue()
           if (
             content.length === 1 ||
@@ -80,15 +110,11 @@ export default {
             this.msg.warn("标签不能为空")
             return false
           }
-          // this.$message({
-          //   message: "处理文章数据...",
-          //   duration: 0,
-          //   iconClass: "el-icon-loading"
-          // })
+          this.submitToast = this.msg.indefiniteInfo("<i class='el-icon-loading'></i>正在处理文章...")
           this.ruleForm.content = content
           post(this.ruleForm).then((response) => {
+            this.submitToast.close()
             const { data } = response
-            // this.$message.closeAll()
             setTimeout(() => {
               this.$router.push({
                 name: 'post-detail',
@@ -102,6 +128,24 @@ export default {
         }
       })
     },
+    customRequest(info) {
+      this.ruleForm.file = info.file
+      getBase64(info.file, imageUrl => {
+        this.imageUrl = imageUrl
+      })
+    },
+    beforeUpload(file) {
+      const accept = ['image/jpg', 'image/jpeg', 'image/png']
+      const isJPG = accept.includes(file.type);
+      const isLt5M = file.size / 1024 / 1024 < 5;
+      if (!isJPG) {
+        this.msg.error('封面图片只能是 JPG/PNG 格式!', 1500);
+      }
+      if (!isLt5M) {
+        this.msg.error('封面图片大小不能超过 5MB!', 1500);
+      }
+      return isJPG && isLt5M;
+    },
     resetForm(formName) {
       this.$refs[formName].resetFields()
       this.contentEditor.setValue('')
@@ -113,4 +157,40 @@ export default {
 </script>
 
 <style>
+.ant-upload.ant-upload-select-picture-card>.ant-upload {
+  width: 350px;
+  height: 200px;
+  padding: 0;
+}
+
+.mainPic {
+  width: 350px;
+  height: 200px;
+}
+.avatar-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.avatar-uploader .el-upload:hover {
+  border-color: #409EFF;
+}
+
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 350px;
+  height: 200px;
+  line-height: 200px;
+  text-align: center;
+}
+
+.avatar {
+  width: 350px;
+  height: 200px;
+  display: block;
+}
 </style>

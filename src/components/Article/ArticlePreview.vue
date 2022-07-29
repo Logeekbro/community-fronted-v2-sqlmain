@@ -53,7 +53,7 @@
                 </span>
             </template> -->
             <img slot="extra" width="272" alt="封面"
-                :src="item.mainPic == '' ? 'https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png' : item.mainPic" />
+                :src="!item.mainPic ? 'https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png' : item.mainPic" />
             <div style="margin-bottom: 25px">
                 <a style="font-size: 18px" slot="title" :href="'/post/' + item.articleId"><strong>{{ item.title
                 }}</strong></a>

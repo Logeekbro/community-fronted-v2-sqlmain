@@ -116,6 +116,7 @@ export default {
         qq: '',
         avatar: ''
       },
+      loadingToast: null,
       passwordForm: {
         oldPassword: '',
         newPassword: '',
@@ -187,19 +188,15 @@ export default {
     },
     httpRequest(param) {
       const haveAvatar = this.user.avatar != null
-      this.$message({
-        message: "上传中...",
-        duration: 0,
-        iconClass: "el-icon-loading"
-      })
+      this.loadingToast = this.msg.indefiniteInfo("<i class='el-icon-loading'></i>正在上传头像...")
       uploadAvatar(param.file, haveAvatar).then((res) => {
         this.$store.dispatch("user/updateAvatar", Date.now())
-        this.$message.closeAll()
+        this.loadingToast.close()
         this.msg.success("上传成功", 1500)
         this.fetchInfo()
       })
         .catch((error) => {
-          this.$message.closeAll()
+          this.loadingToast.close()
         })
     },
     beforeAvatarUpload(file) {
