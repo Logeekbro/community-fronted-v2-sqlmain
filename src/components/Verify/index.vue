@@ -134,7 +134,7 @@ export default {
             this.clearStatus()
             const { data } = await startVerify()
             this.verifyId = data.verifyId
-            this.imgSrc = `http://localhost:10000/verify/open/img/${this.verifyId}`
+            this.imgSrc = `${process.env.VUE_APP_SERVER_URL}/verify/open/img/${this.verifyId}`
             const words = data.words
 
             this.wordMap["tl"] = words[0]

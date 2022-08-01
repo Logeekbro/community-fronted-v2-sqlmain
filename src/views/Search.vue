@@ -12,53 +12,12 @@
             <span> 文章 <b-tag rounded> {{ articleList.length }} </b-tag> </span>
           </template>
 
-          <div>
-            <article v-for="(item, index) in articleList" :key="index" class="media">
-              <div class="media-left">
-                <user-avatar shape="square" :size="48" :userId="item.author.userId" ></user-avatar>
-                <!-- <a-avatar shape="square" :size="48" :src="item.author.avatar + '?' + avatarTS" /> -->
-              </div>
-              <div class="media-content">
-                <div class="">
-                  <p class="ellipsis is-ellipsis-1">
-                    <el-tooltip :open-delay="700" class="item" effect="dark" :content="item.article.title"
-                      placement="top">
-                      <router-link :to="{ name: 'post-detail', params: { id: item.article.articleId } }">
-                        <span class="is-size-6" v-html="highlightKeyword(item.article.title)"></span>
-                      </router-link>
-                    </el-tooltip>
-                  </p>
-                </div>
-                <nav class="level has-text-grey is-mobile  is-size-7 mt-2">
-                  <div class="level-left">
-                    <div class="level-left">
-                      <router-link class="level-item" :to="{ path: `/member/${item.author.account}/home` }">
-                        {{ item.nickName }}
-                      </router-link>
-
-                      <span class="mr-1">
-                        发布于:{{ dayjs(item.article.createTime).format("YYYY/MM/DD") }}
-                      </span>
-
-                      <span v-for="(tag, index) in item.tags" :key="index"
-                        class="tag is-hidden-mobile is-success is-light mr-1">
-                        <router-link :to="{ name: 'tag', params: { name: tag } }">
-                          {{ "#" + tag }}
-                        </router-link>
-                      </span>
-
-                      <span class="is-hidden-mobile">浏览:{{ item.article.viewCount }}</span>
-                    </div>
-                  </div>
-                </nav>
-              </div>
-              <div class="media-right" />
-            </article>
-          </div>
+          <article-preview :articleList="articleList" :showLoadMore="hasMore"
+              :loadingMore="loadingMore" @doLoadMore="loadMore"></article-preview>
 
           <!--分页-->
-          <pagination v-show="articleQuery.total > 0" :total="articleQuery.total" :page.sync="articleQuery.pageNum"
-            :limit.sync="articleQuery.pageSize" @pagination="fetchArticle" />
+          <!-- <pagination v-show="articleQuery.total > 0" :total="articleQuery.total" :page.sync="articleQuery.pageNum"
+            :limit.sync="articleQuery.pageSize" @pagination="fetchArticle" /> -->
         </b-tab-item>
 
         <b-tab-item>
@@ -103,10 +62,11 @@ import { searchByKeyword, searchByTagName, searchByUserIdOrName } from '@/api/se
 import Pagination from '@/components/Pagination'
 import store from '@/store'
 import UserAvatar from '@/components/User/Avatar'
+import ArticlePreview from '@/components/Article/ArticlePreview'
 
 export default {
   name: 'Search',
-  components: { Pagination, UserAvatar },
+  components: { Pagination, UserAvatar, ArticlePreview },
   data() {
     return {
       activeTab: 0,
@@ -132,6 +92,7 @@ export default {
         total: 0
       },
       avatarTS: store.getters.avatarTS,
+      hasMore: false
     }
   },
   mounted() {
@@ -176,7 +137,11 @@ export default {
     getInfoCount() {
       const count = this.articleList.length + this.tagList.length + this.userList.length
       return count
+    },
+    loadMoreArticle() {
+
     }
+
   }
 }
 </script>

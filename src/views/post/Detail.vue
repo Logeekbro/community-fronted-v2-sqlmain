@@ -1,5 +1,8 @@
 <template>
   <div class="columns">
+    <div style="position: fixed; z-index: 2; left: 6%; top: 30%">
+        <score style="width: 100px; cursor: pointer;" :articleId="topic.articleId" direction="v"></score>
+    </div>
     <!--文章详情-->
     <div class="column is-three-quarters">
       <!--主题-->
@@ -10,8 +13,8 @@
             <span>{{ dayjs(topic.createTime).format('YYYY/MM/DD HH:mm:ss') }}</span>
             <!-- <el-divider direction="vertical" />
             <span>发布者：{{ topicUser.nickName }}</span> -->
-            <el-divider direction="vertical" />
-            <span>浏览：{{ topic.viewCount }}</span>
+            <!-- <el-divider direction="vertical" />
+            <span>浏览：{{ topic.viewCount }}</span> -->
           </div>
         </div>
 
@@ -20,18 +23,12 @@
 
         <!--标签-->
         <nav class="level has-text-grey is-size-7 mt-6">
-          <div class="level-left">
-            <p class="level-item">
-              <b-taglist>
-                <router-link v-for="(tag, index) in tags" :key="index" :to="{ name: 'tag', params: { name: tag } }">
-                  <b-tag type="is-info is-light mr-1">
-                    {{ "#" + tag }}
-                  </b-tag>
-                </router-link>
-              </b-taglist>
+          <div class="level-left" style="width: 50%">
+            <p class="level-item" style="width: 50%">
+              <tag :articleId="topic.articleId"></tag>
             </p>
           </div>
-          <div v-if="token && user.userId === topicUser.userId" class="level-right">
+          <div v-if="token && user.userId === topicUser.userId" class="level-right" style="width: 50%">
             <router-link class="level-item" :to="{ name: 'topic-edit', params: { id: topic.articleId } }">
               <!-- <span class="tag">编辑</span> -->
               <b-tag type="is-info">编辑</b-tag>
@@ -49,7 +46,7 @@
       <lv-comments :slug="topic.id" :authorId="topicUser.userId" />
     </div>
 
-    <div class="column">
+    <div class="column is-one-quarter">
       <!--作者-->
       <Author v-if="flag" :user="topicUser" />
       <!--推荐-->
@@ -70,10 +67,12 @@ import Recommend from '@/views/post/Recommend'
 import LvComments from '@/components/Comment/Comments'
 import Vditor from 'vditor'
 import 'vditor/dist/index.css'
+import Score from '@/components/Article/Score'
+import Tag from '@/components/Tag/index'
 
 export default {
   name: 'TopicDetail',
-  components: { Author, Recommend, LvComments },
+  components: { Author, Recommend, LvComments, Score, Tag },
   computed: {
     ...mapGetters([
       'token', 'user'

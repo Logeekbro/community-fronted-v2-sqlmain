@@ -27,7 +27,7 @@ const routes = [
     name: "post-create",
     path: "/post/create",
     component: () => import("@/views/post/Create"),
-    meta: { title: "信息发布", requireAuth: true },
+    meta: { title: "文章发布", requireAuth: true },
   },
   // 编辑
   {

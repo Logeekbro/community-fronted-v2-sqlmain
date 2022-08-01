@@ -72,13 +72,13 @@ export default {
     getFollowerCount: function (id) {
       getFollowerCount(id).then(response => {
         const { data } = response
-        this.followerCount = data.followerCount
+        this.followerCount = data.value
       })
     },
     getArticleCount: function (id) {
       getArticleCount(id).then(response => {
         const { data } = response
-        this.articleCount = data.articleCount
+        this.articleCount = data.value
       })
     },
     addFollower(){

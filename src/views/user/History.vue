@@ -19,7 +19,8 @@
             <a-list size="large" v-for="(history, pindex) in historys" :key="pindex" bordered
                 style="background-color: aliceblue;">
                 <div slot="header">
-                    <span style="font-size: 25px; color: orange">{{ getDisplayDate(history.targetDate) }}</span>
+                    <span style="font-size: 25px; color: orange">{{ getDisplayDate(history.targetDate) + ' (' + history.records.length + '条)' }}</span>
+                    
                 </div>
                 <a-list-item v-for="(item, index) in history.records" :key="index">
                     <div class="media-content">
