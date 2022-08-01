@@ -53,11 +53,7 @@ export default {
     },
     async loadMore() {
       this.page.current += 1
-      const { data } = await getList(this.page.current, this.page.size, this.tab)
-      this.page.current = data.current
-      this.page.total = data.total
-      this.page.size = data.size
-      return data.records
+      return await this.init()
     }
   }
 }

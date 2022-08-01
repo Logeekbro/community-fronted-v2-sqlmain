@@ -9,21 +9,17 @@
         <b-tab-item>
           <template #header :disabled="articleList == null || articleList.length == 0">
             <vs-icon icon="article"></vs-icon>
-            <span> 文章 <b-tag rounded> {{ articleList.length }} </b-tag> </span>
+            <span> 文章 <b-tag rounded> {{ articleQuery.total }} </b-tag> </span>
           </template>
 
-          <article-preview :articleList="articleList" :showLoadMore="hasMore"
-              :loadingMore="loadingMore" @doLoadMore="loadMore"></article-preview>
-
-          <!--分页-->
-          <!-- <pagination v-show="articleQuery.total > 0" :total="articleQuery.total" :page.sync="articleQuery.pageNum"
-            :limit.sync="articleQuery.pageSize" @pagination="fetchArticle" /> -->
+          <article-preview :loadData="fetchArticle" :loadMore="loadMoreArticle" :total="articleQuery.total">
+          </article-preview>
         </b-tab-item>
 
         <b-tab-item>
           <template #header>
-              <vs-icon icon="label"></vs-icon>
-              <span> 标签 <b-tag rounded> {{ tagList.length }} </b-tag> </span>
+            <vs-icon icon="label"></vs-icon>
+            <span> 标签 <b-tag rounded> {{ tagList.length }} </b-tag> </span>
           </template>
           <vs-list>
             <a :href="`/tag/${item.tagName}`" v-for="(item, index) in tagList" :key="index">
@@ -44,7 +40,7 @@
             <a :href="`/member/${item.userId}/home`" v-for="(item, index) in userList" :key="index">
               <vs-list-item :title="item.nickName" :subtitle="'简介：' + item.introduce" style="height: 80px">
                 <template slot="avatar">
-                  <user-avatar :size="54" :userId="item.userId" style="margin-right: 20px" ></user-avatar>
+                  <user-avatar :size="54" :userId="item.userId" style="margin-right: 20px"></user-avatar>
                   <!-- <a-avatar shape="circle" :size="54" :src="item.avatar" style="margin-right: 20px" /> -->
                 </template>
               </vs-list-item>
@@ -60,7 +56,6 @@
 <script>
 import { searchByKeyword, searchByTagName, searchByUserIdOrName } from '@/api/search'
 import Pagination from '@/components/Pagination'
-import store from '@/store'
 import UserAvatar from '@/components/User/Avatar'
 import ArticlePreview from '@/components/Article/ArticlePreview'
 
@@ -70,7 +65,6 @@ export default {
   data() {
     return {
       activeTab: 0,
-      articleList: [],
       tagList: [],
       userList: [],
       articleQuery: {
@@ -91,7 +85,6 @@ export default {
         pageSize: 10,
         total: 0
       },
-      avatarTS: store.getters.avatarTS,
       hasMore: false
     }
   },
@@ -100,18 +93,20 @@ export default {
   },
   methods: {
     fetchList() {
-      this.fetchArticle()
+      // this.fetchArticle()
       this.fetchTag()
       this.fetchUser()
     },
-    fetchArticle() {
-      searchByKeyword(this.articleQuery).then(value => {
-        const { data } = value
-        this.articleList = data.records
-        this.articleQuery.total = data.total
-        this.articleQuery.pageSize = data.size
-        this.articleQuery.pageNum = data.current
-      })
+    async fetchArticle() {
+      const { data } = await searchByKeyword(this.articleQuery)
+      this.articleQuery.total = data.total
+      this.articleQuery.pageSize = data.size
+      this.articleQuery.pageNum = data.current
+      return data.records
+    },
+    async loadMoreArticle() {
+      this.articleQuery.pageNum += 1
+      return await this.fetchArticle()
     },
     fetchTag() {
       searchByTagName(this.tagQuery).then(value => {
@@ -135,13 +130,9 @@ export default {
       return title.replaceAll(this.articleQuery.keyword, "<strong style='color: rgba(31,116,255,1)'>" + this.articleQuery.keyword + "</strong>")
     },
     getInfoCount() {
-      const count = this.articleList.length + this.tagList.length + this.userList.length
+      const count = this.articleQuery.total + this.tagList.length + this.userList.length
       return count
     },
-    loadMoreArticle() {
-
-    }
-
   }
 }
 </script>

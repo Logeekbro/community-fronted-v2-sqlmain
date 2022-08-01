@@ -24,7 +24,7 @@
         <!--标签-->
         <nav class="level has-text-grey is-size-7 mt-6">
           <div class="level-left" style="width: 50%">
-            <p class="level-item" style="width: 50%">
+            <p style="width: 50%">
               <tag :articleId="topic.articleId"></tag>
             </p>
           </div>

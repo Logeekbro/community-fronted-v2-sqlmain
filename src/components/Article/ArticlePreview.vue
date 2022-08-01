@@ -1,42 +1,4 @@
 <template>
-    <!-- <div class="media">
-        <div class="media-left">
-            <user-avatar :userId="author.authorId" :size="48" :shape="'square'"></user-avatar>
-        </div>
-        <div class="media-content">
-            <div class="">
-                <p class="ellipsis is-ellipsis-1">
-                    <el-tooltip :open-delay="700" class="item" effect="dark" :content="article.title" placement="top">
-                        <router-link :to="{ name: 'post-detail', params: { id: article.articleId } }">
-                            <span class="is-size-6"><strong>{{ article.title }}</strong></span>
-                        </router-link>
-                    </el-tooltip>
-                </p>
-            </div>
-            <nav class="level has-text-grey is-mobile  is-size-7 mt-2">
-                <div class="level-left">
-                    <div class="level-left">
-                        <router-link class="level-item" :to="{ path: `/member/${author.authorId}/home` }">
-                            {{ author.nickName }}
-                        </router-link>
-
-                        <span class="mr-1">
-                            发布于:{{ dayjs(article.createTime).format("YYYY/MM/DD HH:mm") }}
-                        </span>
-
-                        <span v-for="(tag, index) in tags" :key="index"
-                            class="tag is-hidden-mobile is-success is-light mr-1">
-                            <router-link :to="{ name: 'tag', params: { name: tag } }">
-                                {{ "#" + tag }}
-                            </router-link>
-                        </span>
-
-                        <span class="is-hidden-mobile">浏览:{{ article.viewCount }}</span>
-                    </div>
-                </div>
-            </nav>
-        </div>
-    </div> -->
     <a-list item-layout="vertical" size="large" :data-source="articleList" :loading="listLoading">
         <div v-if="showLoadMore" slot="loadMore"
             :style="{ textAlign: 'center', marginTop: '12px', height: '32px', lineHeight: '32px' }">
@@ -46,12 +8,6 @@
             </a-button>
         </div>
         <a-list-item slot="renderItem" key="index" slot-scope="item, index">
-            <!-- <template v-for="{ type, text } in actions" slot="actions">
-                <span :key="type">
-                    <a-icon :type="type" style="margin-right: 8px" />
-                    {{ text }}
-                </span>
-            </template> -->
             <img slot="extra" style="height: 150px" width="272" alt="封面"
                 :src="!item.mainPic ? 'https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png' : item.mainPic" />
             <div style="margin-bottom: 25px">
@@ -64,13 +20,13 @@
                 </div>
             </div>
             <div class="level-left">
-                <user-avatar :userId="item.authorId" :size="25" style="margin-right: 5px"></user-avatar>
+                <user-avatar :userId="item.authorId" :size="25" style="margin-right: 8px"></user-avatar>
                 <router-link class="level-item" :to="{ path: `/member/${item.authorId}/home` }">
                     <strong>{{ item.nickName }}</strong>
                 </router-link>
                 <el-divider direction="vertical" />
-                <span class="mr-1">
-                    {{ ' ' + parseTime(item.createTime) }}
+                <span class="mr-1 ml-2">
+                    {{ parseTime(item.createTime) }}
                 </span>
                 <br />
             </div>
@@ -80,8 +36,6 @@
             <div style="margin-top: 15px">
                 <score :articleId="item.articleId"></score>
             </div>
-
-            <!-- {{ item.content }} -->
         </a-list-item>
     </a-list>
 </template>
@@ -109,7 +63,10 @@ export default {
             type: Number,
             default: 0
         },
-        change: {type: String}
+        change: {
+            type: String,
+            default: ''
+        }
 
     },
     data() {
@@ -138,9 +95,9 @@ export default {
         async doLoadMore() {
             this.loadingMore = true
             const tmpList = await this.loadMore()
+            console.log(tmpList)
             this.loadingMore = false
             this.articleList = this.articleList.concat(tmpList)
-            this.loading = false
             this.checkHaveMore()
         },
         checkHaveMore() {
