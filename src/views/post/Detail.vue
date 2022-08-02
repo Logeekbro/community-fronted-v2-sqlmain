@@ -11,8 +11,8 @@
           <p class="is-size-5 has-text-weight-bold">{{ topic.title }}</p>
           <div class="has-text-grey is-size-7 mt-3">
             <span>{{ dayjs(topic.createTime).format('YYYY/MM/DD HH:mm:ss') }}</span>
-            <!-- <el-divider direction="vertical" />
-            <span>发布者：{{ topicUser.nickName }}</span> -->
+            <el-divider direction="vertical" />
+            <span>分区：{{ sectionInfo.sectionName }}</span>
             <!-- <el-divider direction="vertical" />
             <span>浏览：{{ topic.viewCount }}</span> -->
           </div>
@@ -30,11 +30,9 @@
           </div>
           <div v-if="token && user.userId === topicUser.userId" class="level-right" style="width: 50%">
             <router-link class="level-item" :to="{ name: 'topic-edit', params: { id: topic.articleId } }">
-              <!-- <span class="tag">编辑</span> -->
               <b-tag type="is-info">编辑</b-tag>
             </router-link>
             <a class="level-item">
-              <!-- <span class="tag" @click="handleDelete(topic.articleId)">删除</span> -->
               <a-popconfirm title="确定要删除该文章吗?" ok-text="确认" cancel-text="取消" @confirm="handleDelete(topic.articleId)">
                 <b-tag type="is-danger">删除</b-tag>
               </a-popconfirm>
@@ -69,6 +67,7 @@ import Vditor from 'vditor'
 import 'vditor/dist/index.css'
 import Score from '@/components/Article/Score'
 import Tag from '@/components/Tag/index'
+import { getSectionInfoByArticleId } from '@/api/section'
 
 export default {
   name: 'TopicDetail',
@@ -88,6 +87,10 @@ export default {
       tags: [],
       topicUser: {},
       views: "",
+      sectionInfo: {
+        sectionId: 1,
+        sectionName: '-'
+      }
     }
   },
   mounted() {
@@ -108,23 +111,15 @@ export default {
       window.scrollTo(0, 0);
       getTopicDetail(this.topic.id).then(response => {
         const { data } = response
-        // =============java 版==================
-        // document.title = data.article.title
-        // this.topic = data.article
-        // this.tags = data.tags
-        // data.author.avatar += "?" + store.getters.avatarTS
-        // this.topicUser = data.author
-        // this.flag = true
-        // ======================================
-
-        // =============sql版==================
         document.title = data.title
         this.topic = data
         this.tags = data.tags
         this.setTopicUser(data.authorId)
         this.renderMarkdown(this.topic.content)
         this.$vs.loading.close(this.$refs.contentLoading)
-        // ====================================
+        getSectionInfoByArticleId(this.topic.articleId).then(rep => {
+          this.sectionInfo = rep.data
+        })
         if (getViewCache() != this.topic.articleId) {
           setViewCache(this.topic.articleId)
           addView(this.topic.articleId)

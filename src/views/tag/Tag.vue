@@ -3,56 +3,12 @@
     <div class="column is-three-quarters">
       <el-card class="box-card" shadow="never">
         <div slot="header">
-          🔍 检索到 <span class="has-text-info">{{ topics.length }}</span> 篇含有标签
+          🔍 检索到 <span class="has-text-info">{{ page.total }}</span> 篇含有标签
           <span class="has-text-info">{{ '#' + this.$route.params.name }}</span>
           的文章
         </div>
-
-        <div ref="loadingBox" style="min-height: 300px" class="vs-con-loading__container">
-          <article v-for="(item, index) in topics" :key="index" class="media">
-              <div class="media-left">
-                <!-- <figure class="image is-48x48">
-                  <img :src="item.author.avatar + '?' + avatarTS" style="border-radius: 5px;">
-                </figure> -->
-                <a-avatar shape="square" :size="48" :src="item.author.avatar + '?' + avatarTS" />
-              </div>
-              <div class="media-content">
-                <div class="">
-                  <p class="ellipsis is-ellipsis-1">
-                    <el-tooltip :open-delay="500" class="item" effect="dark" :content="item.article.title"
-                      placement="top">
-                      <router-link :to="{ name: 'post-detail', params: { id: item.article.articleId } }">
-                        <span class="is-size-6"><strong>{{ item.article.title }}</strong></span>
-                      </router-link>
-                    </el-tooltip>
-                  </p>
-                </div>
-                <nav class="level has-text-grey is-mobile  is-size-7 mt-2">
-                  <div class="level-left">
-                    <div class="level-left">
-                      <router-link class="level-item" :to="{ path: `/member/${item.author.userId}/home` }">
-                        {{ item.author.nickName }}
-                      </router-link>
-
-                      <span class="mr-1">
-                        发布于:{{ dayjs(item.article.createTime).format("YYYY/MM/DD HH:mm") }}
-                      </span>
-
-                      <span v-for="(tag, index) in item.tags" :key="index"
-                        class="tag is-hidden-mobile is-success is-light mr-1">
-                        <router-link :to="{ name: 'tag', params: { name: tag } }">
-                          {{ "#" + tag }}
-                        </router-link>
-                      </span>
-
-                      <span class="is-hidden-mobile">浏览:{{ item.article.viewCount }}</span>
-                    </div>
-                  </div>
-                </nav>
-              </div>
-              <div class="media-right" />
-            </article>
-        </div>
+        <article-preview :loadData="fetchList" :loadMore="loadMore" :total="page.total"></article-preview>
+        
       </el-card>
     </div>
 
@@ -95,37 +51,38 @@
 
 <script>
 import { getTopicsByTag } from '@/api/search'
-import store from '@/store'
+import ArticlePreview from '@/components/Article/ArticlePreview'
 
 export default {
   name: 'Tag',
+  components: {ArticlePreview},
   data() {
     return {
       topics: [],
       tags: [],
-      paramMap: {
+      page: {
         name: this.$route.params.name,
-        page: 1,
-        size: 10
+        current: 1,
+        size: 10,
+        total: 0
       },
-      avatarTS: store.getters.avatarTS,
       showResult: false
     }
   },
   mounted() {
-    this.fetchList()
+    // this.fetchList()
   },
   methods: {
-    fetchList: function() {
-      this.$vs.loading({
-        container: this.$refs.loadingBox,
-        type: "corners",
-      })
-      getTopicsByTag(this.paramMap).then(response => {
-        const { data } = response
-        this.topics = data
-        this.$vs.loading.close(this.$refs.loadingBox)
-      })
+    async fetchList() {
+      const { data } = await getTopicsByTag(this.page)
+      this.page.current = data.current
+      this.page.size = data.size
+      this.page.total = data.total
+      return data.records
+    },
+    async loadMore() {
+      this.page.current += 1
+      return await this.fetchList()
     }
   }
 }

@@ -87,6 +87,18 @@ const routes = [
     meta: {title: '浏览记录', requireAuth: true}
   },
   {
+    name: 'user-custom',
+    path: '/custom',
+    component: () => import('@/views/user/Custom'),
+    meta: {title: '个性化', requireAuth: true}
+  },
+  {
+    name: 'section',
+    path: '/section',
+    component: () => import('@/views/section/index'),
+    meta: {title: '分区', requireAuth: false}
+  },
+  {
     path: "/404",
     name: "404",
     component: () => import("@/views/error/404"),

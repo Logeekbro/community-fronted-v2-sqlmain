@@ -42,13 +42,13 @@ export function searchByUserIdOrName(query) {
 }
 
 // 根据标签搜索文章
-export function getTopicsByTag(paramMap) {
+export function getTopicsByTag(page) {
   return request({
-    url: `/${start}/open/articleByTag/${paramMap.name}`,
+    url: `/${start}/open/article/byTag/${page.name}`,
     method: 'get',
     params: {
-      page: paramMap.page,
-      size: paramMap.size
+      current: page.current,
+      size: page.size
     }
   })
 }

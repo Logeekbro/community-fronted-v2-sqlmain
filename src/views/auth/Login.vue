@@ -74,7 +74,6 @@ export default {
   },
   methods: {
     submitForm(formName) {
-
       this.$refs[formName].validate(valid => {
         if (valid) {
           if (this.accessToken == "") {
@@ -92,9 +91,11 @@ export default {
                 this.$router.push({ path: this.redirect || "/" });
               }, 0.1 * 1000);
             })
-            .catch(() => {
-              this.loading = false;
-              this.accessToken = ""
+            .catch(err => {
+              if(err.message != "用户名或密码错误") {
+                this.accessToken = ''
+              }
+              this.loading = false
             });
         } else {
           return false;

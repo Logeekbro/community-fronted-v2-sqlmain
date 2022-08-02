@@ -7,6 +7,6 @@ export function getTagSetById(articleId) {
       url: `/${start}/${articleId}`,
       method: 'get'
     })
-  }
+}
 
 

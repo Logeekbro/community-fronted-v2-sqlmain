@@ -15,7 +15,11 @@
           🌐 主页
         </b-navbar-item>
       </template>
-
+      <template slot="start">
+        <b-navbar-item tag="router-link" :to="{ path: '/section' }">
+          🌗 分区
+        </b-navbar-item>
+      </template>
       <template slot="end">
         <b-navbar-item tag="div" style="margin-top: 15px">
           <b-field position="is-centered">
@@ -71,6 +75,10 @@
                 ⚙ 设置中心
               </b-navbar-item>
               <hr class="dropdown-divider">
+              <b-navbar-item tag="router-link" :to="{ path: `/custom` }">
+                🔧 个性化
+              </b-navbar-item>
+              <hr class="dropdown-divider">
               <b-navbar-item tag="a" @click="logout"> 👋 退出登录
               </b-navbar-item>
             </b-navbar-dropdown>
@@ -98,7 +106,8 @@ export default {
       searchKey: '',
       darkMode: false,
       unReadCount: 0,
-      cycleId: 0
+      cycleId: 0,
+      cycleTime: 10 * 1000
     }
   },
   computed: {
@@ -123,11 +132,20 @@ export default {
     } else {
       disableDarkMode()
     }
+
     if (store.getters.token != null && store.getters.token != '') {
       this.getMessageCount()
-      this.cycleGetMessageCount()
+      const isDoCycle = localStorage.getItem('openMessageFetch') == null ? true : Boolean(localStorage.getItem('openMessageFetch'))
+      if (isDoCycle) {
+        this.cycleTime = (localStorage.getItem('messageCycleTime') == null ? 10 : localStorage.getItem('messageCycleTime')) * 1000
+        this.cycleGetMessageCount()
+      }
+
     }
 
+  },
+  destroyed() {
+    clearInterval(this.cycleId)
   },
   methods: {
     async logout() {
@@ -143,12 +161,11 @@ export default {
         this.msg.warn('请输入关键字搜索！')
         return false
       }
-      
+
       this.$router.push({ path: '/search?key=' + this.searchKey })
       this.searchKey = ''
     },
     async getUserInfo() {
-
       this.$store.dispatch('user/getInfo');
     },
     getMessageCount() {
@@ -163,7 +180,7 @@ export default {
 
     },
     cycleGetMessageCount() {
-      this.cycleId = setInterval(this.getMessageCount, 10000)
+      this.cycleId = setInterval(this.getMessageCount, this.cycleTime)
     }
   }
 }

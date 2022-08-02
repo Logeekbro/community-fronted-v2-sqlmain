@@ -4,7 +4,8 @@ import { getToken, setToken, setTokenTemp, removeToken } from "@/utils/auth";
 const state = {
   token: getToken(), // token
   user: "", // 用户对象
-  avatarTS: Date.now() // 头像更新的时间戳，用于解决缓存问题
+  avatarTS: Date.now(), // 头像更新的时间戳，用于解决缓存问题
+  avatarMap: new Map() // 已获取的用户头像, 避免重复发送请求
 };
 
 const mutations = {
@@ -16,6 +17,10 @@ const mutations = {
   },
   SET_AVATAR_STATE: (state, ts) => {
     state.avatarTS = ts
+  },
+  SET_AVATAR_MAP_VALUE_STATE: (state, obj) => {
+    const { userId, avatar } = obj
+    state.avatarMap.set(userId, avatar)
   }
 };
 
@@ -68,7 +73,6 @@ const actions = {
     return new Promise((resolve, reject) => {
       logout()
         .then((response) => {
-          console.log(response);
           commit("SET_TOKEN_STATE", "");
           commit("SET_USER_STATE", "");
           removeToken();
@@ -81,6 +85,9 @@ const actions = {
   },
   updateAvatar({ commit }, ts){
     commit("SET_AVATAR_STATE", ts)
+  },
+  setAvatar({ commit }, obj){
+    commit("SET_AVATAR_MAP_VALUE_STATE", obj)
   }
 };
 

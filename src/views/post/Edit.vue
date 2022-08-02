@@ -4,7 +4,7 @@
       <div class="column is-full">
         <el-card class="box-card" shadow="never">
           <div slot="header" class="clearfix">
-            <span><i class="fa fa fa-book"> 文章 / 更新文章</i></span>
+            <span><i class="fa fa fa-book"> 更新文章</i></span>
           </div>
           <div>
             <el-form :model="topic" ref="topic" class="demo-topic">
@@ -21,11 +21,18 @@
                 </el-upload>
               </div>
 
+              <div style="margin-top: 20px; margin-bottom: 20px;">
+                <strong>文章分区：</strong>
+                <a-select v-model="sectionInfo.sectionId" style="width: 120px" @change="handleSectionChange">
+                  <a-select-option v-for="(item, index) in sectionList" :key="index" :value="item.sectionId">
+                    {{ item.sectionName }}
+                  </a-select-option>
+                </a-select>
+              </div>
+
               <!--Markdown-->
               <div id="vditor" />
-
-              <b-taginput size="is-medium" :closable="false" :readonly="true" v-model="tags" class="my-3" ellipsis
-                placeholder="文章标签不支持修改" />
+              
               <el-form-item class="mt-3">
                 <el-button type="primary" @click="handleUpdate()">更新
                 </el-button>
@@ -41,6 +48,7 @@
 
 <script>
 import { getTopicDetail, update } from "@/api/post";
+import { getSectionList } from "@/api/section";
 import Vditor from "vditor";
 import "vditor/dist/index.css";
 import vditorConfig from '@/config/vditor';
@@ -61,6 +69,8 @@ export default {
       tags: [],
       imageUrl: '',
       submitToast: null,
+      sectionList: [],
+      sectionInfo: {}
     };
   },
   created() {
@@ -83,9 +93,17 @@ export default {
         }
         this.topic = data;
         this.imageUrl = this.topic.mainPic
-        this.tags = data.tags;
         this.renderMarkdown(this.topic.content);
+        getSectionList().then(rep => {
+          this.sectionList = rep.data
+          this.sectionInfo = this.getSectionInfo()
+        })
       });
+    },
+    getSectionInfo() {
+      return this.sectionList.find((item, index) => {
+        return item.sectionId == this.topic.sectionId
+      })
     },
     customRequest(info) {
       this.topic.file = info.file
@@ -118,6 +136,9 @@ export default {
         }, 1);
       });
     },
+    handleSectionChange(value) {
+      this.topic.sectionId = value
+    },
     resetForm(formName) {
       this.$refs[formName].resetFields();
       this.contentEditor.setValue("");
@@ -135,6 +156,7 @@ export default {
   width: 350px;
   height: 200px;
 }
+
 .avatar-uploader .el-upload {
   border: 1px dashed #d9d9d9;
   border-radius: 6px;

@@ -13,11 +13,20 @@
 
             <div>
               <strong style="display: block;">文章封面：</strong>
-              <el-upload class="avatar-uploader" action="" :show-file-list="false" :http-request="customRequest"
+              <el-upload ref="mainP" class="avatar-uploader" action="" :show-file-list="false" :http-request="customRequest"
                 :before-upload="beforeUpload">
                 <img v-if="imageUrl" :src="imageUrl" class="avatar">
                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
               </el-upload>
+            </div>
+
+            <div style="margin-top: 20px; margin-bottom: 20px;">
+              <strong>选择分区：</strong>
+              <a-select ref="section" default-value="点击选择" style="width: 120px" @change="handleSectionChange">
+                <a-select-option v-for="(item, index) in sectionList" :key="index" :value="item.sectionId">
+                  {{ item.sectionName }}
+                </a-select-option>
+              </a-select>
             </div>
 
             <!--Markdown-->
@@ -40,6 +49,7 @@
 
 <script>
 import { post } from '@/api/post'
+import { getSectionList } from "@/api/section"
 import Vditor from 'vditor'
 import 'vditor/dist/index.css'
 import vditorConfig from '@/config/vditor'
@@ -60,9 +70,11 @@ export default {
         title: '',
         tags: [],
         content: '',
-        file: null
+        file: null,
+        sectionId: null
       },
       submitToast: null,
+      sectionList: [],
       imageUrl: '',
       rules: {
         title: [
@@ -80,21 +92,25 @@ export default {
   },
   mounted() {
     this.contentEditor = new Vditor('vditor', vditorConfig)
+    this.fetchSectionList()
   },
   methods: {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-
           if (this.ruleForm.title == "") {
             this.msg.warn("请输入文章标题")
-            window.scrollTo(0, 0)
             this.$refs.myTitle.focus()
             return false
           }
           if (this.ruleForm.file == null) {
             this.msg.warn("请上传文章封面")
-            window.scrollTo(0, 0)
+            this.$refs.mainP.focus()
+            return false
+          }
+          if (this.ruleForm.sectionId == null) {
+            this.msg.warn("请选择分区")
+            this.$refs.section.focus()
             return false
           }
           const content = this.contentEditor.getValue()
@@ -134,6 +150,14 @@ export default {
         this.imageUrl = imageUrl
       })
     },
+    fetchSectionList() {
+      getSectionList().then(rep => {
+        this.sectionList = rep.data
+      })
+    },
+    handleSectionChange(value) {
+      this.ruleForm.sectionId = value
+    },
     beforeUpload(file) {
       const accept = ['image/jpg', 'image/jpeg', 'image/png']
       const isJPG = accept.includes(file.type);
@@ -167,6 +191,7 @@ export default {
   width: 350px;
   height: 200px;
 }
+
 .avatar-uploader .el-upload {
   border: 1px dashed #d9d9d9;
   border-radius: 6px;

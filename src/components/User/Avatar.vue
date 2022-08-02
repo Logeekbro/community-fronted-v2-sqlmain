@@ -38,6 +38,7 @@ export default {
             avatarTS: store.getters.avatarTS,
             avatar: null,
             user: store.getters.user,
+            avatarMap: store.getters.avatarMap
         };
     },
     watch: {
@@ -49,12 +50,23 @@ export default {
     },
     methods: {
         getSrc(userId) {
+            
             if (userId == this.user.userId) {
                 this.avatar = this.user.avatar + '?' + this.avatarTS
             }
+            
+            else if(this.avatarMap.has(userId) && this.avatarMap.get(userId) != null) {
+                this.avatar = this.avatarMap.get(userId)
+            }
             else {
                 getAvatar(userId).then(rep => {
-                    this.avatar = rep.data.value + '?' + this.avatarTS
+                    const newAvatar = rep.data.value + '?' + this.avatarTS
+                    this.avatar = newAvatar
+                    const obj = {
+                        userId: userId,
+                        avatar: newAvatar
+                    }
+                    this.$store.dispatch('user/setAvatar', obj)
                 })
             }
         }

@@ -47,7 +47,7 @@
             <strong>{{ ' ' + comment.user.nickName + ' ' }}</strong>
           </router-link>
 
-          <span>发表于</span>
+          <span v-text="'·'"></span>
           <small class="ml-2">{{ dayjs(comment.comment.createTime).format('YYYY/MM/DD HH:mm') }}</small>
 
           <br>

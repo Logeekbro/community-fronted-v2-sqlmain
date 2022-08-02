@@ -36,6 +36,8 @@ export function post(topic) {
   data.append("title", topic.title)
   data.append("file", topic.file)
   data.append("content", topic.content)
+  data.append("sectionId", topic.sectionId)
+  data.append("tags", topic.tags)
   return request({
     url: `/${start}/`,
     method: 'post',
@@ -69,6 +71,7 @@ export function update(topic) {
   data.append("articleId", topic.articleId)
   data.append("authorId", topic.authorId)
   data.append("title", topic.title)
+  data.append("sectionId", topic.sectionId)
   data.append("file", topic.file)
   data.append("content", topic.content)
   return request({
@@ -96,21 +99,6 @@ export function getArticleCount(id) {
 }
 
 // 用户浏览记录
-
-// java版
-// export function getUserHistory(current, size){
-//   const params = {
-//     current: current,
-//     size: size
-//   }
-//   return request({
-//     url: `/${start}/history/${store.getters.token}`,
-//     method: 'get',
-//     params: params
-//   })
-// }
-
-// sql版
 export function getUserHistory(current, size){
   const params = {
     current: current,

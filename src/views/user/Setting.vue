@@ -188,7 +188,7 @@ export default {
     },
     httpRequest(param) {
       const haveAvatar = this.user.avatar != null
-      this.loadingToast = this.msg.indefiniteInfo("<i class='el-icon-loading'></i>正在上传头像...")
+      this.loadingToast = this.msg.indefiniteInfo("<i class='el-icon-loading'></i>上传中...")
       uploadAvatar(param.file, haveAvatar).then((res) => {
         this.$store.dispatch("user/updateAvatar", Date.now())
         this.loadingToast.close()

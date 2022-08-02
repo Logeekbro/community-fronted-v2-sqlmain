@@ -38,7 +38,7 @@ service.interceptors.request.use(
 service.defaults.withCredentials = false
 
 // 设置用户未登录时的弹窗延时，避免短时间多次弹窗
-let popTime = 0
+const popLayout = 20 * 1000
 
 service.interceptors.response.use(
   // 接收到响应数据并成功后的一些共有的处理，关闭loading等
@@ -50,9 +50,10 @@ service.interceptors.response.use(
       if (res.code === 401) {
         const currentTime = new Date().getTime()
         console.log("currentTime:" + currentTime)
-        console.log("popTime:" + popTime)
-        if (currentTime - popTime > 5000) {
-          popTime = currentTime
+        const popTime = sessionStorage.getItem('popTime') == null ? 0 : sessionStorage.getItem('popTime')
+        console.log("popTime:" + sessionStorage.getItem('popTime'))
+        if (currentTime - popTime > popLayout) {
+          sessionStorage.setItem('popTime', currentTime)
           // 重新登录
           MessageBox.confirm('您可以留在当前页面，或重新登录', res.message, {
             confirmButtonText: '确定',

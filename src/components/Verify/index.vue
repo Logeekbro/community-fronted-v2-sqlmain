@@ -1,11 +1,13 @@
 <template>
-    <el-dialog @open="initList" title="成分验证" @closed="handleClose" :visible.sync="tVV" width="30%"
-     center>
+    <el-dialog @open="initList" title="成分验证" @closed="handleClose" :visible.sync="tVV" center>
         <el-alert v-if="hasError" :title="errorText + '，请刷新后重试'" type="error" description="" show-icon>
         </el-alert>
         <div>
             <strong>现有如下等式：</strong>
-            <img :src="imgSrc" />
+            <div style="width: 400px; height: 120px">
+                <img :src="imgSrc" alt="验证码加载失败，请刷新后重试" />
+            </div>
+
         </div>
         <div id="components-a-tooltip-demo-placement">
             <div :style="{ marginLeft: `${buttonWidth}px`, whiteSpace: 'nowrap' }">
@@ -164,14 +166,14 @@ export default {
             event.target.style.fontSize = "40px"
         },
         handleLeave(event) {
-            event.target.style.fontSize = "15px"
+            event.target.style.fontSize = "20px"
         },
         handleClick(word) {
             if (this.clickIndex < this.clickOrder.length - 1) {
                 this.verifyWord += word
                 this.clickIndex += 1
             }
-            else if(!this.hasError) {
+            else if (!this.hasError) {
                 this.verifyWord += word
                 doVerify(this.verifyId, this.verifyWord).then(rep => {
                     this.tVV = false
@@ -206,5 +208,6 @@ export default {
     padding: 0;
     margin-right: 8px;
     margin-bottom: 8px;
+    font-size: 20px;
 }
 </style>

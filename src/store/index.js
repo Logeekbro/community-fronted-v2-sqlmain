@@ -9,7 +9,7 @@ const store = new Vuex.Store({
     modules: {
         user
     },
-    getters
+    getters,
 })
 
 export default store
