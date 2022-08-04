@@ -37,7 +37,7 @@ export function post(topic) {
   data.append("file", topic.file)
   data.append("content", topic.content)
   data.append("sectionId", topic.sectionId)
-  data.append("tags", topic.tags)
+  data.append("tags", JSON.stringify(topic.tags))
   return request({
     url: `/${start}/`,
     method: 'post',

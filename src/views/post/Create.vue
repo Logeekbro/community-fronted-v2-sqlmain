@@ -13,7 +13,7 @@
 
             <div>
               <strong style="display: block;">文章封面：</strong>
-              <el-upload ref="mainP" class="avatar-uploader" action="" :show-file-list="false" :http-request="customRequest"
+              <el-upload class="avatar-uploader" action="" :show-file-list="false" :http-request="customRequest"
                 :before-upload="beforeUpload">
                 <img v-if="imageUrl" :src="imageUrl" class="avatar">
                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
@@ -32,11 +32,29 @@
             <!--Markdown-->
             <div id="vditor" />
 
-            <b-taginput v-model="ruleForm.tags" class="my-3" maxlength="10" maxtags="5" ellipsis
-              placeholder="请输入标签，限制为 10 个字符和 5 个标签" />
+            <!-- <b-taginput v-model="ruleForm.tags" class="my-3" maxlength="10" maxtags="5" ellipsis
+              placeholder="请输入标签，限制为 10 个字符和 5 个标签" /> -->
 
-            <el-form-item>
-              <el-button type="primary" @click="submitForm('ruleForm')">立即创建
+            <div style="margin-top: 20px;">
+              <strong>文章标签（可以有多个）：</strong>
+
+              <div style="margin-top: 15px">
+                <a-tag v-if="ruleForm.tags.length > 0" v-for="tag in ruleForm.tags" :key="tag.tagId" closable
+                  @close="() => handleRemoveTag(tag)">
+                  {{ tag.tagName }}
+                </a-tag>
+              </div>
+            </div>
+            <br>
+
+            <el-autocomplete value-key="tagName" class="inline-input" v-model="inputTagName"
+              :fetch-suggestions="handleSearch" placeholder="请输入标签" :trigger-on-focus="false" @select="onSelect">
+            </el-autocomplete>
+            <el-button style="margin-left: 10px" type="primary" @click="handleInputConfirm">确认
+            </el-button>
+
+            <el-form-item style="margin-top: 20px">
+              <el-button type="primary" @click="submitForm('ruleForm')">发布文章
               </el-button>
               <el-button @click="resetForm('ruleForm')">重置</el-button>
             </el-form-item>
@@ -50,6 +68,7 @@
 <script>
 import { post } from '@/api/post'
 import { getSectionList } from "@/api/section"
+import { getSimilarTagListByTagName } from '@/api/tag'
 import Vditor from 'vditor'
 import 'vditor/dist/index.css'
 import vditorConfig from '@/config/vditor'
@@ -76,6 +95,9 @@ export default {
       submitToast: null,
       sectionList: [],
       imageUrl: '',
+      inputVisible: false,
+      inputTagName: '',
+      tagData: [],
       rules: {
         title: [
           { required: false, message: '请输入文章标题', trigger: 'blur' },
@@ -105,7 +127,7 @@ export default {
           }
           if (this.ruleForm.file == null) {
             this.msg.warn("请上传文章封面")
-            this.$refs.mainP.focus()
+            window.scrollTo(0, 0)
             return false
           }
           if (this.ruleForm.sectionId == null) {
@@ -157,6 +179,47 @@ export default {
     },
     handleSectionChange(value) {
       this.ruleForm.sectionId = value
+    },
+    handleInputConfirm() {
+      const tagName = this.inputTagName.trim()
+      const exist = this.ruleForm.tags.some(tag => tag.tagName == tagName)
+      if (tagName.trim() != '' && !exist) {
+        this.inputTagName = ''
+        const tag = this.tagData.find((item, index) => item.tagName == tagName)
+        if (tag) {
+          this.ruleForm.tags.push(tag)
+        }
+        else {
+          this.ruleForm.tags.push({
+            tagId: null,
+            tagName: tagName
+          })
+        }
+      }
+      else {
+        this.msg.error("标签已存在或为空", 1500)
+      }
+      this.tagData = []
+    },
+    handleRemoveTag(removeTag) {
+      const tags = this.ruleForm.tags.filter(tag => tag !== removeTag);
+      this.ruleForm.tags = tags;
+    },
+    handleSearch(text, cb) {
+      const tagName = text.trim()
+      this.tagData = []
+      if (tagName != '') {
+        getSimilarTagListByTagName(tagName).then(rep => {
+          this.tagData = rep.data
+          cb(this.tagData)
+        }) 
+      }
+      else {
+        cb([])
+      }
+    },
+    onSelect(tag) {
+      this.inputTagName = tag.tagName
     },
     beforeUpload(file) {
       const accept = ['image/jpg', 'image/jpeg', 'image/png']
