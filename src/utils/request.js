@@ -38,7 +38,7 @@ service.interceptors.request.use(
 service.defaults.withCredentials = false
 
 // 设置用户未登录时的弹窗延时，避免短时间多次弹窗
-const popLayout = 20 * 1000
+const popLayout = 5 * 1000 * 60
 
 service.interceptors.response.use(
   // 接收到响应数据并成功后的一些共有的处理，关闭loading等

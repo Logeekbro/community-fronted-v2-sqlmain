@@ -36,7 +36,7 @@
               <strong>文章摘要（用于在文章列表中显示本文的主要内容）：</strong>
               <br>
               <br>
-              <el-input type="textarea" :rows="4" placeholder="输入文章摘要" v-model="ruleForm.summary">
+              <el-input maxlength="255" type="textarea" :rows="4" placeholder="输入文章摘要" show-word-limit v-model="ruleForm.summary">
               </el-input>
             </div>
 
@@ -107,11 +107,11 @@ export default {
       tagData: [],
       rules: {
         title: [
-          { required: false, message: '请输入文章标题', trigger: 'blur' },
+          { required: true, message: '请输入文章标题', trigger: 'change' },
           {
-            min: 0,
-            max: 50,
-            message: '长度在 1 到 50 个字符',
+            min: 1,
+            max: 30,
+            message: '长度在 1 到 30 个字符',
             trigger: 'change'
           }
         ]
@@ -127,11 +127,6 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          if (this.ruleForm.title == "") {
-            this.msg.warn("请输入文章标题")
-            this.$refs.myTitle.focus()
-            return false
-          }
           if (this.ruleForm.file == null) {
             this.msg.warn("请上传文章封面")
             window.scrollTo(0, 0)
@@ -168,7 +163,7 @@ export default {
             }, 1)
           })
         } else {
-          console.log('error submit!!')
+          this.$refs.myTitle.focus()
           return false
         }
       })

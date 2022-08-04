@@ -113,7 +113,6 @@ export default {
         const { data } = response
         document.title = data.title
         this.topic = data
-        this.tags = data.tags
         this.setTopicUser(data.authorId)
         this.renderMarkdown(this.topic.content)
         this.$vs.loading.close(this.$refs.contentLoading)

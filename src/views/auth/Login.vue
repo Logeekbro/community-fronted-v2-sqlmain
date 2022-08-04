@@ -56,7 +56,7 @@ export default {
           {
             min: 2,
             max: 15,
-            message: "长度在 2 到 15 个字符",
+            message: "长度在 1 到 16 个字符",
             trigger: "blur",
           },
         ],
