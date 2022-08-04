@@ -5,7 +5,7 @@
                 {{ "#" + tag }}
             </router-link>
         </span>
-        
+
     </b-taglist>
 
 </template>
@@ -28,7 +28,7 @@ export default {
         };
     },
     watch: {
-        articleId: async function(n, o) {
+        articleId: async function (n, o) {
             const { data } = await getTagSetById(n)
             this.tags = data.value
         }
@@ -37,9 +37,12 @@ export default {
     methods: {},
     created() { },
     async mounted() {
-        const { data } = await getTagSetById(this.articleId)
-        this.tags = data.value
-     }
+        if (this.articleId != null) {
+            const { data } = await getTagSetById(this.articleId)
+            this.tags = data.value
+        }
+
+    }
 };
 </script>
 <style scoped>

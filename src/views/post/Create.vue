@@ -32,8 +32,14 @@
             <!--Markdown-->
             <div id="vditor" />
 
-            <!-- <b-taginput v-model="ruleForm.tags" class="my-3" maxlength="10" maxtags="5" ellipsis
-              placeholder="请输入标签，限制为 10 个字符和 5 个标签" /> -->
+            <div style="margin-top: 20px;">
+              <strong>文章摘要（用于在文章列表中显示本文的主要内容）：</strong>
+              <br>
+              <br>
+              <el-input type="textarea" :rows="4" placeholder="输入文章摘要" v-model="ruleForm.summary">
+              </el-input>
+            </div>
+
 
             <div style="margin-top: 20px;">
               <strong>文章标签（可以有多个）：</strong>
@@ -90,7 +96,8 @@ export default {
         tags: [],
         content: '',
         file: null,
-        sectionId: null
+        sectionId: null,
+        summary: ''
       },
       submitToast: null,
       sectionList: [],
@@ -212,7 +219,7 @@ export default {
         getSimilarTagListByTagName(tagName).then(rep => {
           this.tagData = rep.data
           cb(this.tagData)
-        }) 
+        })
       }
       else {
         cb([])

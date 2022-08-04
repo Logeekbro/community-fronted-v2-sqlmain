@@ -16,7 +16,7 @@
                 <br>
                 <div
                     style="width: 400px;overflow:hidden;margin-top: 10px;white-space: nowrap; text-overflow: ellipsis;">
-                    {{ item.content }}
+                    {{ !item.summary ? '[无摘要，点击文章标题查看详情]' : item.summary }}
                 </div>
             </div>
             <div class="level-left">

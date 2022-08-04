@@ -37,6 +37,7 @@ export function post(topic) {
   data.append("file", topic.file)
   data.append("content", topic.content)
   data.append("sectionId", topic.sectionId)
+  data.append("summary", topic.summary)
   data.append("tags", JSON.stringify(topic.tags))
   return request({
     url: `/${start}/`,
@@ -74,6 +75,7 @@ export function update(topic) {
   data.append("sectionId", topic.sectionId)
   data.append("file", topic.file)
   data.append("content", topic.content)
+  data.append("summary", topic.summary)
   return request({
     url: `/${start}/`,
     method: 'put',

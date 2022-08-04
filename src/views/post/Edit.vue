@@ -32,7 +32,15 @@
 
               <!--Markdown-->
               <div id="vditor" />
-              
+
+              <div style="margin-top: 20px;">
+                <strong>文章摘要：</strong>
+                <br>
+                <br>
+                <el-input type="textarea" :rows="4" placeholder="输入文章摘要" v-model="topic.summary">
+                </el-input>
+              </div>
+
               <el-form-item class="mt-3">
                 <el-button type="primary" @click="handleUpdate()">更新
                 </el-button>
