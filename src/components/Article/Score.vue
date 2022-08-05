@@ -2,9 +2,22 @@
     <div>
         <div v-if="direction == 'v'">
             <a-card>
-                <a-card-grid v-for="{ type, text } in actions" :key="type" style="width:100%;text-align:center">
-                    <a-icon :type="type" style="font-size: 18px;" />
-                    {{ text }}
+                <a-card-grid @click="handleLike" v-if="liked" style="width:100%;text-align:center">
+                    <a-icon theme="filled" type="like" style="font-size: 18px;color: cornflowerblue;" />
+                    {{ likeCount }}
+                </a-card-grid>
+                <a-card-grid @click="handleLike" v-else style="width:100%;text-align:center">
+                    <a-icon ref="myLike" type="like-o" style="font-size: 18px;color: cornflowerblue;" />
+                    {{ likeCount }}
+                </a-card-grid>
+                <a-card-grid style="width:100%;text-align:center">
+                    <a-icon type="message" style="font-size: 18px;color: cornflowerblue;" />
+                    {{ commentCount }}
+                </a-card-grid>
+
+                <a-card-grid style="width:100%;text-align:center">
+                    <a-icon type="eye-o" style="font-size: 18px;color: cornflowerblue;" />
+                    {{ viewCount }}
                 </a-card-grid>
             </a-card>
         </div>
@@ -22,6 +35,7 @@
 
 <script>
 import { getLikeCount, getCommentCount, getViewCount } from '@/api/count';
+import { doLike, isLiked } from '@/api/action'
 
 export default {
     name: "Score",
@@ -43,12 +57,11 @@ export default {
                 { type: 'message', text: '-' },
                 { type: 'eye-o', text: '-' },
             ],
-            actions: [
-                { type: 'like-o', text: '-' },
-                { type: 'message', text: '-' },
-                { type: 'eye-o', text: '-' },
-            ],
-            trueId: this.articleId
+            trueId: this.articleId,
+            likeCount: '-',
+            commentCount: '-',
+            viewCount: '-',
+            liked: false
         };
     },
     watch: {
@@ -67,11 +80,11 @@ export default {
                 let rep
                 if (this.direction == "v") {
                     rep = await getLikeCount(id)
-                    this.actions[0].text = rep.data.value
+                    this.likeCount = rep.data.value
                     rep = await getCommentCount(id)
-                    this.actions[1].text = rep.data.value
+                    this.commentCount = rep.data.value
                     rep = await getViewCount(id)
-                    this.actions[2].text = rep.data.value
+                    this.viewCount = rep.data.value
                 }
                 else {
                     rep = await getLikeCount(id)
@@ -81,7 +94,24 @@ export default {
                     rep = await getViewCount(id)
                     this.scores[2].text = rep.data.value
                 }
+                rep = await isLiked(id)
+                this.liked = rep.data.value
             }
+        },
+        handleLike() {
+
+            doLike(this.trueId).then(rep => {
+                if (this.liked) {
+                    this.likeCount--
+                }
+                else {
+                    this.likeCount++
+                }
+                this.liked = !this.liked
+            }).catch(error => {
+                this.msg.error("点赞失败：" + error.message, 1500)
+            })
+            
         }
     },
     created() {
