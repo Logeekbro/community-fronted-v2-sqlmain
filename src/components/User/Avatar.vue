@@ -42,7 +42,7 @@ export default {
         };
     },
     watch: {
-        userId: function(n, o) {
+        userId: function (n, o) {
             this.getSrc(n)
         }
     },
@@ -50,21 +50,26 @@ export default {
     },
     methods: {
         getSrc(userId) {
-            
+
             if (userId == this.user.userId) {
                 this.avatar = this.user.avatar + '?' + this.avatarTS
             }
-            
-            else if(this.avatarMap.has(userId) && this.avatarMap.get(userId) != null) {
+
+            else if (this.avatarMap.has(userId) && this.avatarMap.get(userId) != null) {
                 this.avatar = this.avatarMap.get(userId)
             }
             else {
                 getAvatar(userId).then(rep => {
-                    const newAvatar = rep.data.value + '?' + this.avatarTS
-                    this.avatar = newAvatar
+                    const avatar = rep.data.value
+                    if (avatar == null) {
+                        this.avatar = null
+                    }
+                    else {
+                        this.avatar = avatar + '?' + this.avatarTS
+                    }
                     const obj = {
                         userId: userId,
-                        avatar: newAvatar
+                        avatar: this.avatar
                     }
                     this.$store.dispatch('user/setAvatar', obj)
                 })
