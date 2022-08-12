@@ -1,5 +1,6 @@
 import { getUserInfo, login, logout } from "@/api/auth/auth";
 import { getToken, setToken, setTokenTemp, removeToken } from "@/utils/auth";
+import { removeViewCache } from '@/utils/view-cache'
 
 const state = {
   token: getToken(), // token
@@ -76,6 +77,7 @@ const actions = {
           commit("SET_TOKEN_STATE", "");
           commit("SET_USER_STATE", "");
           removeToken();
+          removeViewCache();
           resolve();
         })
         .catch((error) => {

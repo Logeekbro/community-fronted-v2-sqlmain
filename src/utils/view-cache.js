@@ -16,3 +16,7 @@ export function setViewCache(id, expires=defaultExpire){
 export function getViewCache(){
     return Cookies.get(viewCache)
 }
+
+export function removeViewCache() {
+    Cookies.remove(viewCache)
+}

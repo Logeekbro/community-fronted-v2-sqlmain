@@ -95,7 +95,6 @@ export default {
         async doLoadMore() {
             this.loadingMore = true
             const tmpList = await this.loadMore()
-            console.log(tmpList)
             this.loadingMore = false
             this.articleList = this.articleList.concat(tmpList)
             this.checkHaveMore()

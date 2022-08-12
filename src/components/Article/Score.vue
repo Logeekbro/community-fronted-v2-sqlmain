@@ -4,27 +4,27 @@
             <a-card>
                 <a-card-grid @click="handleLike" v-if="liked" style="width:100%;text-align:center">
                     <a-icon theme="filled" type="like" style="font-size: 18px;color: cornflowerblue;" />
-                    {{ likeCount }}
+                    {{ likeCount ? likeCount : 0 }}
                 </a-card-grid>
                 <a-card-grid @click="handleLike" v-else style="width:100%;text-align:center">
                     <a-icon ref="myLike" type="like-o" style="font-size: 18px;color: cornflowerblue;" />
-                    {{ likeCount }}
+                    {{ likeCount ? likeCount : 0 }}
                 </a-card-grid>
                 <a-card-grid style="width:100%;text-align:center">
                     <a-icon type="message" style="font-size: 18px;color: cornflowerblue;" />
-                    {{ commentCount }}
+                    {{ commentCount ? commentCount : 0 }}
                 </a-card-grid>
 
                 <a-card-grid style="width:100%;text-align:center">
                     <a-icon type="eye-o" style="font-size: 18px;color: cornflowerblue;" />
-                    {{ viewCount }}
+                    {{ viewCount ? viewCount : 0 }}
                 </a-card-grid>
             </a-card>
         </div>
         <div v-else>
             <span v-for="{ type, text } in scores" :key="type" @click="handleClick(type)">
                 <a-icon :type="type" style="margin-right: 8px" />
-                {{ text }}
+                {{ text ? text : 0 }}
                 <a-divider type="vertical" />
             </span>
         </div>
@@ -85,6 +85,8 @@ export default {
                     this.commentCount = rep.data.value
                     rep = await getViewCount(id)
                     this.viewCount = rep.data.value
+                    rep = await isLiked(id)
+                    this.liked = rep.data.value
                 }
                 else {
                     rep = await getLikeCount(id)
@@ -94,12 +96,10 @@ export default {
                     rep = await getViewCount(id)
                     this.scores[2].text = rep.data.value
                 }
-                rep = await isLiked(id)
-                this.liked = rep.data.value
+
             }
         },
         handleLike() {
-
             doLike(this.trueId).then(rep => {
                 if (this.liked) {
                     this.likeCount--
@@ -111,7 +111,7 @@ export default {
             }).catch(error => {
                 this.msg.error("点赞失败：" + error.message, 1500)
             })
-            
+
         }
     },
     created() {

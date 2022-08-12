@@ -23,8 +23,8 @@
 
               <div style="margin-top: 20px; margin-bottom: 20px;">
                 <strong>文章分区：</strong>
-                <a-select v-model="sectionInfo.sectionId" style="width: 120px" @change="handleSectionChange">
-                  <a-select-option v-for="(item, index) in sectionList" :key="index" :value="item.sectionId">
+                <a-select v-model="topic.sectionId" style="width: 120px" @change="handleSectionChange">
+                  <a-select-option v-for="item in sectionList" :key="item.sectionId" :value="item.sectionId">
                     {{ item.sectionName }}
                   </a-select-option>
                 </a-select>
@@ -37,7 +37,7 @@
                 <strong>文章摘要：</strong>
                 <br>
                 <br>
-                <el-input type="textarea" :rows="4" placeholder="输入文章摘要" v-model="topic.summary">
+                <el-input maxlength="255" show-word-limit type="textarea" :rows="4" placeholder="输入文章摘要" v-model="topic.summary">
                 </el-input>
               </div>
 
@@ -104,7 +104,7 @@ export default {
         this.renderMarkdown(this.topic.content);
         getSectionList().then(rep => {
           this.sectionList = rep.data
-          this.sectionInfo = this.getSectionInfo()
+          this.topic.sectionId = this.getSectionInfo().sectionId
         })
       });
     },

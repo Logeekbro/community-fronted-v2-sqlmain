@@ -29,7 +29,7 @@
         <vs-tabs alignment="fixed" style="z-index: 0">
           <!--用户发布的文章-->
           <vs-tab label="文  章" style="padding: 0;" @click="fetchUserById" icon="article">
-            <el-card style="height: 509.5px">
+            <el-card style="height: 509.5px; overflow-y: scroll;overflow-x: hidden;">
               <div v-if="loadText != ''">
                 {{ loadText }}
               </div>
