@@ -36,7 +36,7 @@
               <strong>文章摘要（用于在文章列表中显示本文的主要内容）：</strong>
               <br>
               <br>
-              <el-input maxlength="255" type="textarea" :rows="4" placeholder="输入文章摘要" show-word-limit v-model="ruleForm.summary">
+              <el-input maxlength="255" show-word-limit type="textarea" :rows="4" placeholder="输入文章摘要" v-model="ruleForm.summary">
               </el-input>
             </div>
 
