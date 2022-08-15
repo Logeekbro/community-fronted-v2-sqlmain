@@ -127,11 +127,11 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          if (this.ruleForm.file == null) {
-            this.msg.warn("请上传文章封面")
-            window.scrollTo(0, 0)
-            return false
-          }
+          // if (this.ruleForm.file == null) {
+          //   this.msg.warn("请上传文章封面")
+          //   window.scrollTo(0, 0)
+          //   return false
+          // }
           if (this.ruleForm.sectionId == null) {
             this.msg.warn("请选择分区")
             this.$refs.section.focus()
