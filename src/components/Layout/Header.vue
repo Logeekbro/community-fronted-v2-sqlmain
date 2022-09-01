@@ -1,6 +1,6 @@
 <template>
   <header class="header has-background-white has-text-black">
-    <b-navbar class="container is-white" :fixed-top="true" style="height: 7%">
+    <b-navbar class="container is-white" style="height: 10%;">
       <template slot="brand">
         <b-navbar-item tag="div">
           <img :src="doubaoImg" alt="logo">
@@ -15,11 +15,11 @@
           🌐 主页
         </b-navbar-item>
       </template>
-      <template slot="start">
+      <!-- <template slot="start">
         <b-navbar-item tag="router-link" :to="{ path: '/section' }">
           🌗 分区
         </b-navbar-item>
-      </template>
+      </template> -->
       <template slot="end">
         <b-navbar-item tag="div" style="margin-top: 15px">
           <b-field position="is-centered">

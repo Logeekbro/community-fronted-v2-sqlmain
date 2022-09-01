@@ -113,4 +113,12 @@ export function getUserHistory(current, size){
   })
 }
 
+// 获取首页置顶文章
+export function getIndexTop() {
+  return request({
+    url: `/${start}/open/index/top`,
+    method: 'get'
+  })
+}
+
 

@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import { getList } from '@/api/post'
+import { getList, getIndexTop } from '@/api/post'
 import Pagination from '@/components/Pagination'
 import ArticlePreview from '@/components/Article/ArticlePreview'
 
@@ -45,7 +45,12 @@ export default {
       this.page.current = data.current
       this.page.total = data.total
       this.page.size = data.size
-      return data.records
+      const records = data.records
+      if(this.page.current == 1) {
+        const topArticle = await getIndexTop()
+        records.unshift(topArticle.data)
+      }
+      return records
     },
     handleClick(tab) {
       this.tab = tab.name

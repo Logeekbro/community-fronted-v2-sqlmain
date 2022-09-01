@@ -50,8 +50,9 @@ export default {
 <style scoped>
 
 footer {
-  margin-top: 50px;
+  margin-top: 20%;
   padding: 0;
+  margin-bottom: 0;
 }
 footer a{
   color: #bfbfbf;

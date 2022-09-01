@@ -11,8 +11,11 @@
             <img slot="extra" style="height: 150px" width="272" alt="封面"
                 :src="!item.mainPic ? 'https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png' : item.mainPic" />
             <div style="margin-bottom: 25px">
-                <a style="font-size: 18px" slot="title" :href="'/post/' + item.articleId"><strong>{{ item.title
-                }}</strong></a>
+                <a style="font-size: 18px" slot="title" :href="'/post/' + item.articleId">
+                    <strong>{{ item.title
+                    }}</strong>
+                </a>
+                <el-tag style="margin-left: 5px" size="small" v-if="item.top">置顶</el-tag>
                 <br>
                 <div
                     style="width: 400px;overflow:hidden;margin-top: 10px;white-space: nowrap; text-overflow: ellipsis;">
@@ -78,7 +81,7 @@ export default {
         };
     },
     watch: {
-        change: function() {
+        change: function () {
             this.fetchData()
         }
     },
