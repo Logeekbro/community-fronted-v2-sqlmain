@@ -3,9 +3,11 @@
         <a-row :gutter="16">
             <a-col v-for="(item, index) in sectionList" :key="index" class="gutter-row" :span="6">
                 <el-card shadow="hover" style="cursor: pointer;">
+                    <a :href="'/section/' + item.sectionId">
                     <div style="text-align: center;">
                         <span style="font-size: 20px">{{ item.sectionName }}</span>
                     </div>
+                </a>
                 </el-card>
             </a-col>
         </a-row>

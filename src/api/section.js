@@ -15,3 +15,14 @@ export function getSectionInfoByArticleId(articleId) {
       method: 'get'
     })
 }
+
+export function getArticleListBySectionId(current, size, sectionId) {
+  return request({
+    url: `/${start}/open/articleList/${sectionId}`,
+    method: 'get',
+    params: {
+      current: current,
+      size: size
+    }
+  })
+}

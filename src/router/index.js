@@ -99,6 +99,12 @@ const routes = [
     meta: {title: '分区', requireAuth: false}
   },
   {
+    name: 'sectionInfo',
+    path: '/section/:sectionId',
+    component: () => import('@/views/section/content'),
+    meta: {title: '详情', requireAuth: false}
+  },
+  {
     path: "/404",
     name: "404",
     component: () => import("@/views/error/404"),

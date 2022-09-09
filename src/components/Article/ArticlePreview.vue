@@ -103,7 +103,7 @@ export default {
             this.checkHaveMore()
         },
         checkHaveMore() {
-            if (this.articleList.length >= this.total) {
+            if (!this.articleList || this.articleList.length >= this.total) {
                 this.showLoadMore = false
             }
             else {
