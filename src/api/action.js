@@ -16,3 +16,10 @@ export function isLiked(id) {
     })
 }
 
+export function doGuestLike(id) {
+    return request({
+        url: `/${start}/open/like/${id}/guest`,
+        method: 'post'
+      })
+}
+

@@ -7,7 +7,7 @@
             v-model.lazy="commentText"
             type="textarea"
             maxlength="400"
-            placeholder="输入评论..."
+            :placeholder="token ? '输入评论...' : '以游客身份发表评论...'"
             :disabled="isLoading"
           ></b-input>
         </b-field>
@@ -30,7 +30,7 @@
 
 <script>
 import { pushComment } from '@/api/comment'
-
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'LvCommentsForm',
@@ -46,6 +46,11 @@ export default {
       type: String,
       default: null
     }
+  },
+  computed: {
+    ...mapGetters([
+      'token'
+    ])
   },
   created() {
     this.mySlug = this.slug

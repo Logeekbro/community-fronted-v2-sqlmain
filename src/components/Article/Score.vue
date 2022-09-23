@@ -34,8 +34,9 @@
 </template>
 
 <script>
+import store from '@/store'
 import { getLikeCount, getCommentCount, getViewCount } from '@/api/count';
-import { doLike, isLiked } from '@/api/action'
+import { doLike, isLiked, doGuestLike } from '@/api/action'
 
 export default {
     name: "Score",
@@ -100,17 +101,24 @@ export default {
             }
         },
         handleLike() {
-            doLike(this.trueId).then(rep => {
-                if (this.liked) {
-                    this.likeCount--
-                }
-                else {
-                    this.likeCount++
-                }
-                this.liked = !this.liked
-            }).catch(error => {
-                this.msg.error("点赞失败：" + error.message, 1500)
-            })
+            if (store.getters.token) {
+                doLike(this.trueId).then(rep => {
+                    if (this.liked) {
+                        this.likeCount--
+                    }
+                    else {
+                        this.likeCount++
+                    }
+                    this.liked = !this.liked
+                }).catch(error => {
+                    this.msg.error("点赞失败：" + error.message, 1500)
+                })
+            }
+            else {
+                doGuestLike(this.trueId).then(rep => {
+                    this.msg.success("由于您未登录，本次点赞不会增加点赞数，但会发送消息通知作者，以表示您对作者的肯定", 5000)
+                })
+            }
 
         }
     },
@@ -123,4 +131,5 @@ export default {
 };
 </script>
 <style scoped>
+
 </style>

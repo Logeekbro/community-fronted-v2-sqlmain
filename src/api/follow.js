@@ -28,7 +28,7 @@ export function hasFollow(topicUserId) {
 // 获取关注人数
 export function getFollowerCount(userId) {
   return request(({
-    url: `/follow/count/${userId}`,
+    url: `/follow/open/count/${userId}`,
     method: 'get'
   }))
 }

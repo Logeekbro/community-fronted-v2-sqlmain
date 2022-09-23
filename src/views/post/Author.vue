@@ -57,15 +57,22 @@ export default {
     }
   },
   mounted() {
-    this.fetchInfo()
+    
   },
   computed: {
     ...mapGetters([
       'token'
     ])
   },
+  watch: {
+    user: function(n, o) {
+      this.user = n
+      this.fetchInfo()
+    }
+  },
   methods: {
     fetchInfo() {
+      console.log(this.user.userId)
       this.getArticleCount(this.user.userId)
       this.getFollowerCount(this.user.userId)
     },

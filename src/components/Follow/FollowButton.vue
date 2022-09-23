@@ -1,5 +1,5 @@
 <template>
-    <div v-if="userId != authorId">
+    <div v-if="token && userId != authorId">
         <button v-if="hasFollow" class="button is-success button-center is-fullwidth" @click="handleUnFollow">
             已关注
         </button>
@@ -20,7 +20,8 @@ export default {
     data() {
         return {
             hasFollow: false,
-            userId: store.getters.user.userId
+            userId: store.getters.user.userId,
+            token: store.getters.token
         }
     },
     props: {

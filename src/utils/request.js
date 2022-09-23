@@ -49,15 +49,13 @@ service.interceptors.response.use(
       // 401: Token失效;
       if (res.code === 401) {
         const currentTime = new Date().getTime()
-        console.log("currentTime:" + currentTime)
         const popTime = sessionStorage.getItem('popTime') == null ? 0 : sessionStorage.getItem('popTime')
-        console.log("popTime:" + sessionStorage.getItem('popTime'))
         if (currentTime - popTime > popLayout) {
           sessionStorage.setItem('popTime', currentTime)
           // 重新登录
           MessageBox.confirm('您可以留在当前页面，或重新登录', res.message, {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
+            confirmButtonText: '去登录',
+            cancelButtonText: '留下',
             type: 'warning',
             center: true
           }).then(() => {

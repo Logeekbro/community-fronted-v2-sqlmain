@@ -46,7 +46,7 @@
 
     <div class="column is-one-quarter">
       <!--作者-->
-      <Author v-if="flag" :user="topicUser" />
+      <Author :user="topicUser" />
       <!--推荐-->
       <!-- <recommend v-if="flag" :topic-id="topic.id" /> -->
 

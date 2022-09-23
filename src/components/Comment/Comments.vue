@@ -4,7 +4,7 @@
     
     <h3 class="title is-5">评论</h3>
     <div id="top"></div>
-    <lv-comments-form :slug="slug" v-if="token" @loadComments="fetchComments" />
+    <lv-comments-form :slug="slug" @loadComments="fetchComments" />
     
     <lv-comments-item @loadComments="fetchComments" v-for="comment in comments"
       :key="`comment-${comment.comment.commentId}`" :comment="comment" :ts="Date.now()" :authorId="authorId" />

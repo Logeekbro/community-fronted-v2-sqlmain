@@ -12,7 +12,7 @@
             <br v-if="topicUser.userId != user.userId">
             <follow-button :authorId="topicUser.userId"></follow-button>
             <br v-if="topicUser.userId != user.userId">
-            <b-button v-if="topicUser.userId != user.userId" @click="handleCreateChat(topicUser.userId)"
+            <b-button v-if="token && topicUser.userId != user.userId" @click="handleCreateChat(topicUser.userId)"
               type="is-info is-light is-link button-center is-fullwidth">发送消息</b-button>
           </div>
 

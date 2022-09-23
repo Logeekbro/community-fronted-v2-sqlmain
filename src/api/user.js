@@ -6,7 +6,7 @@ import store from '@/store'
 // 用户公开信息
 export function getOpenInfo(userId){
   return request({
-    url: `/user/openInfo/${userId}`,
+    url: `/user/open/openInfo/${userId}`,
     method: 'get',
   })
 }
