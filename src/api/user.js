@@ -51,4 +51,14 @@ export function getAvatar(userId) {
   })
 }
 
+// 获取用户昵称
+export function getNickNameByUserId(userId) {
+  return request({
+    url: `/user/open/nickName/${userId}`,
+    method: 'get'
+  })
+}
+
+
+
 
