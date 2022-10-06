@@ -13,15 +13,15 @@ export function sendMessage(message) {
     })
 }
 
-// 获取用户所有已读消息
+// 获取用户所有已读私信消息
 export function getAllMessage() {
     return request({
-        url: `/${start}/all`,
+        url: `/${start}/private/all`,
         method: 'get'
     })
 }
 
-// 获取所有未读消息
+// 获取所有未读私信消息
 export function getAllUnReadMessage() {
     return request({
         url: `/${start}/unRead/all`,
@@ -41,6 +41,14 @@ export function updateReadStatus(senderId) {
 export function getAllUnReadCount() {
     return request({
         url: `/${start}/unReadCount/all`,
+        method: 'get',
+    })
+}
+
+// 获取所有系统消息
+export function getAllSystemMessage() {
+    return request({
+        url: `/${start}/system`,
         method: 'get',
     })
 }

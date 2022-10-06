@@ -79,7 +79,6 @@ export default {
   },
   data() {
     return {
-      flag: false,  // 是否显示作者模块
       topic: {
         content: '',
         id: this.$route.params.id
@@ -144,10 +143,10 @@ export default {
         }
       })
     },
-    async setTopicUser(id) {
-      const { data } = await getOpenInfo(id)
-      this.topicUser = data
-      this.flag = true
+    setTopicUser(id) {
+      getOpenInfo(id).then(rep => {
+        this.topicUser = rep.data
+      })
     }
   }
 }

@@ -53,7 +53,7 @@ service.interceptors.response.use(
         if (currentTime - popTime > popLayout) {
           sessionStorage.setItem('popTime', currentTime)
           // 重新登录
-          MessageBox.confirm('您可以留在当前页面，或重新登录', res.message, {
+          MessageBox.confirm('您可以留在当前页面，或登录后体验完整功能', res.message, {
             confirmButtonText: '去登录',
             cancelButtonText: '留下',
             type: 'warning',
@@ -82,14 +82,18 @@ service.interceptors.response.use(
   },
   error => {
     /** *** 接收到异常响应的处理开始 *****/
-    if (error.response != null && error.response.status == 400) {
+    const err = error.toJSON()
+    if(err.message == "Network Error") {
+      MyMsg.error("网络异常，请检查后重试", 2000)
+    }
+    else if (error.response != null && error.response.status == 400) {
       MyMsg.error("参数有误", 2000)
     }
     else if (error.response != null && error.response.status == 500) {
       MyMsg.error("服务器异常!", 2000)
     }
     else {
-      MyMsg.error("寄!", 2000)
+      MyMsg.error("客户端异常：" + err.message, 2000)
     }
 
     return Promise.reject(error)

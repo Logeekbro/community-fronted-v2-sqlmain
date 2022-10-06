@@ -3,8 +3,8 @@
     <!--是否登录-->
     <login-welcome />
 
-    <!--今日赠言-->
-    <!-- <tip-card /> -->
+    <!--活跃作者-->
+    <active-author></active-author>
 
     <!--资源推介-->
     <!-- <PromotionCard /> -->
@@ -12,13 +12,13 @@
 </template>
 
 <script>
-import TipCard from '@/views/card/Tip'
+import ActiveAuthor from '@/views/card/ActiveAuthor'
 import PromotionCard from '@/views/card/Promotion'
 import LoginWelcome from '@/views/card/LoginWelcome'
 
 export default {
   name: 'CardBar',
-  components: { LoginWelcome, PromotionCard, TipCard }
+  components: { LoginWelcome, PromotionCard, ActiveAuthor }
 }
 </script>
 

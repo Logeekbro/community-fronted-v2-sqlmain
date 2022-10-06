@@ -115,7 +115,7 @@ export default {
                 rb: '-'
             },
             verifyId: "",
-            clickOrder: [],
+            clickOrder: ['加载中...'],
             imgSrc: '',
             clickIndex: 0,
             verifyWord: '',

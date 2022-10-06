@@ -123,7 +123,9 @@ export default {
   components: { pagination, FollowButton, UserAvatar },
   data() {
     return {
-      topicUser: null,
+      topicUser: {
+        userId: -1
+      },
       topics: {},
       page: {
         current: 1,
@@ -144,6 +146,7 @@ export default {
     ...mapGetters(['token', 'user'])
   },
   mounted() {
+    window.scrollTo(0, 0);
     this.fetchUserById()
     getOpenInfo(this.$route.params.username).then((res) => {
       const { data } = res

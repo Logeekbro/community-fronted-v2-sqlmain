@@ -121,4 +121,20 @@ export function getIndexTop() {
   })
 }
 
+// 通过文章id获取文章标题
+export function getTitleByArticleId(articleId) {
+  return request({
+    url: `/${start}/open/title/${articleId}`,
+    method: 'get'
+  })
+}
+
+// 获取活跃作者信息
+export function getActiveAuthors(n) {
+  return request({
+    url: `/${start}/open/mostActiveAuthors/${n}`,
+    method: 'get'
+  })
+}
+
 

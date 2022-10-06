@@ -31,7 +31,13 @@ export default {
         }
     },
     mounted() {
-        this.fetchInfo()
+        
+    },
+    watch: {
+        authorId: function (n, o) {
+            this.authorId = n
+            this.fetchInfo()
+        }
     },
     methods: {
         fetchInfo() {
