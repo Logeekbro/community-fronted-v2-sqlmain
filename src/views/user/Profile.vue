@@ -92,14 +92,17 @@
                 </el-empty>
               </div>
               <vs-list v-else>
-                <a :href="`/member/${item.userId}/home`" v-for="(item, index) in follows" :key="index">
+                <router-link v-for="(item, index) in follows" :key="index" :to="{ path: `/member/${item.userId}/home` }">
                   <vs-list-item :title="item.nickName" :subtitle="'简介：' + item.introduce" style="height: 80px">
                     <template slot="avatar">
                       <user-avatar :size="54" :userId="item.userId" style="margin-right: 20px"></user-avatar>
                       <!-- <a-avatar shape="circle" :size="54" :src="item.avatar" style="margin-right: 20px" /> -->
                     </template>
                   </vs-list-item>
-                </a>
+                </router-link>
+                <!-- <a :href="`/member/${item.userId}/home`">
+                  
+                </a> -->
               </vs-list>
             </el-card>
           </vs-tab>

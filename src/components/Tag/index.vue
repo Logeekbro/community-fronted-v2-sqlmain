@@ -5,7 +5,6 @@
                 {{ "#" + tag }}
             </router-link>
         </span>
-
     </b-taglist>
 
 </template>

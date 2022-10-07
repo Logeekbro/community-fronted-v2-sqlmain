@@ -105,7 +105,7 @@ export default {
     fetchTopic() {
       this.$vs.loading({
         container: this.$refs.contentLoading,
-        type: "corners",
+        type: "default",
       })
       window.scrollTo(0, 0);
       getTopicDetail(this.topic.id).then(response => {

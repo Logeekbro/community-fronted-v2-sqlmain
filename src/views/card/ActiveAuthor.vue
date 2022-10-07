@@ -1,23 +1,23 @@
 <template>
   <el-card class="box-card" shadow="never">
-    <div slot="header">
-      <h2>活跃作者Top{{ Math.min(authors.length, n) }}</h2>
+    <div slot="header" class="content">
+      <h4>🌡 活跃作者Top{{ Math.min(authors.length, n) }}</h4>
     </div>
     <div>
       <div v-for="(item, index) in authors" :key="index">
         <router-link :to="{ path: `/member/${item.authorId}/home` }">
-          
-          <div>
+          <div class="content">
             <Avatar style="display: inline-block; margin-right: 10px" :userId="item.authorId" shape="square"></Avatar>
-            <NickName :userId="item.authorId"></NickName>
+            <strong>
+              <NickName style="display: inline-block;" :userId="item.authorId"></NickName>
+            </strong>
           </div>
-
-
-
-          <el-divider direction="vertical" />
-          文章数量：{{ item.articleCount }}
-
         </router-link>
+
+        <el-divider direction="vertical" />
+        文章数量：<code>{{ item.articleCount }}</code>
+
+
         <vs-divider></vs-divider>
       </div>
       <!-- <div class="has-text-right mt-5 block">

@@ -6,19 +6,19 @@
     <!--活跃作者-->
     <active-author></active-author>
 
-    <!--资源推介-->
-    <!-- <PromotionCard /> -->
+    <!--热门标签-->
+    <HotTags />
   </section>
 </template>
 
 <script>
 import ActiveAuthor from '@/views/card/ActiveAuthor'
-import PromotionCard from '@/views/card/Promotion'
+import HotTags from '@/views/card/HotTags'
 import LoginWelcome from '@/views/card/LoginWelcome'
 
 export default {
   name: 'CardBar',
-  components: { LoginWelcome, PromotionCard, ActiveAuthor }
+  components: { LoginWelcome, HotTags, ActiveAuthor }
 }
 </script>
 

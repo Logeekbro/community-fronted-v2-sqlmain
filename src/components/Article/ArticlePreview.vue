@@ -1,7 +1,7 @@
 <template>
     <a-list item-layout="vertical" size="large" :data-source="articleList" :loading="listLoading">
         <div v-if="showLoadMore" slot="loadMore"
-            :style="{ textAlign: 'center', marginTop: '12px', height: '32px', lineHeight: '32px' }">
+            :style="{ textAlign: 'center', marginTop: '12px', height: '35px', lineHeight: '35px' }">
             <a-spin v-if="loadingMore" />
             <a-button v-else @click="doLoadMore">
                 点击加载更多

@@ -5,7 +5,7 @@
       <div class="column is-three-quarters">
         <TopicList></TopicList>
       </div>
-      <div class="column">
+      <div class="column is-one-quarter">
         <CardBar></CardBar>
       </div>
     </div>
