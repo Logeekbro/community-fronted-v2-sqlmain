@@ -30,6 +30,21 @@
                 </a-select>
               </div>
 
+              <div style="margin-top: 20px;margin-bottom: 20px;">
+                <strong>更新时间标记
+                  <a-popover title="在新增内容与原内容之间增加分隔符并显示更新时间，例如：">
+                    <template slot="content">
+                      <p>[这是原内容]</p>
+                      <p>----以下内容更新于XXXX年XX月XX日 XX:XX-----</p>
+                      <p>[这是新内容]</p>
+                    </template>
+                    <a-icon type="question-circle" />
+                  </a-popover> ：
+                </strong>
+                <!-- <a-switch @change="isAddUpdateTimeMark" /> -->
+                <el-button size="small" @click="addUpdateTimeMark()" type="primary">添加</el-button>
+              </div>
+
               <!--Markdown-->
               <div id="vditor" />
 
@@ -37,9 +52,24 @@
                 <strong>文章摘要：</strong>
                 <br>
                 <br>
-                <el-input maxlength="255" show-word-limit type="textarea" :rows="4" placeholder="输入文章摘要" v-model="topic.summary">
+                <el-input maxlength="255" show-word-limit type="textarea" :rows="4" placeholder="输入文章摘要"
+                  v-model="topic.summary">
                 </el-input>
               </div>
+
+              <!-- <div style="margin-top: 20px;margin-bottom: 20px;">
+                <strong>增加更新时间标记
+                  <a-popover title="在新增内容与原内容之间增加分隔符并显示更新时间，例如：">
+                    <template slot="content">
+                      <p>[这是原内容]</p>
+                      <p>----2022年X月x日更新-----</p>
+                      <p>[这是新内容]</p>
+                    </template>
+                    <a-icon type="question-circle" />
+                  </a-popover> ：
+                </strong>
+                <a-switch @change="isAddUpdateTimeMark" />
+              </div> -->
 
               <el-form-item class="mt-3">
                 <el-button type="primary" @click="handleUpdate()">更新
@@ -61,6 +91,7 @@ import Vditor from "vditor";
 import "vditor/dist/index.css";
 import vditorConfig from '@/config/vditor';
 import store from '@/store'
+import dayjs from 'dayjs'
 
 function getBase64(img, callback) {
   const reader = new FileReader();
@@ -78,7 +109,7 @@ export default {
       imageUrl: '',
       submitToast: null,
       sectionList: [],
-      sectionInfo: {}
+      sectionInfo: {},
     };
   },
   created() {
@@ -133,6 +164,28 @@ export default {
     },
     handleUpdate: function () {
       this.submitToast = this.msg.indefiniteInfo("<i class='el-icon-loading'></i>正在处理文章...")
+      // if (this.addUpdateTime) {
+      //   // 原文章内容
+      //   const originContent = this.topic.content
+      //   // 新文章内容
+      //   const newContent = this.contentEditor.getValue()
+      //   // 在有内容新增的情况下才生效
+      //   if (newContent.length > originContent.length) {
+      //     console.log(typeof originContent)
+      //     console.log(typeof newContent)
+      //     // 获取新增的文章内容
+      //     const addContent = newContent.replace(originContent, "")
+      //     console.log(addContent)
+      //     // 插入时间标记
+      //     const timeMark = "------以下内容更新于" + dayjs().format('YYYY年MM月DD日 HH:mm') + "------"
+      //     // 最终文章内容
+      //     const trueContent = originContent + "\n" + timeMark + "\n" + addContent
+      //     this.topic.content = trueContent
+      //   }
+      // }
+      // else {
+      //   this.topic.content = this.contentEditor.getValue();
+      // }
       this.topic.content = this.contentEditor.getValue();
       update(this.topic).then(() => {
         this.submitToast.close()
@@ -151,6 +204,10 @@ export default {
       this.$refs[formName].resetFields();
       this.contentEditor.setValue("");
     },
+    addUpdateTimeMark() {
+      this.contentEditor.insertValue("\n\r------以下内容更新于" + dayjs().format('YYYY年MM月DD日 HH:mm') + "------")
+      this.addUpdateTime = true
+    }
   },
 };
 </script>

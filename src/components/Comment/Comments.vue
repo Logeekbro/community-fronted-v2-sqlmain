@@ -1,5 +1,5 @@
 <template>
-  <section class="box comments">
+  <section class="box comments" v-if="token">
     <hr />
     
     <h3 class="title is-5">评论</h3>
@@ -11,6 +11,9 @@
 
     <pagination v-show="page.total > 0" class="mt-5" :total="page.total" :page.sync="page.current"
       :limit.sync="page.size" :autoScroll="false" @pagination="fetchComments" />
+  </section>
+  <section class="box comments" v-else>
+    <router-link style="color: #167df0; font-size: 15px;" :to="{ path: `/login?redirect=/post/${topicId}` }">登录</router-link><span>后查看评论</span>
   </section>
 </template>
 

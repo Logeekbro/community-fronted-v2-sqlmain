@@ -41,7 +41,7 @@ export default {
   components: { Verify },
   data() {
     return {
-      redirect: null,
+      redirect: this.$route.query.redirect,
       loading: false,
       verifyVisible: false,
       ruleForm: {

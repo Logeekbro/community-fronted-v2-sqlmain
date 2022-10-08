@@ -53,15 +53,15 @@ service.interceptors.response.use(
         if (currentTime - popTime > popLayout) {
           sessionStorage.setItem('popTime', currentTime)
           // 重新登录
-          MessageBox.confirm('您可以留在当前页面，或登录后体验完整功能', res.message, {
-            confirmButtonText: '去登录',
-            cancelButtonText: '留下',
-            type: 'warning',
-            center: true
-          }).then(() => {
-            removeToken();
-            window.location.href = '/login'
-          })
+          // MessageBox.confirm('您可以留在当前页面，或登录后体验完整功能', res.message, {
+          //   confirmButtonText: '去登录',
+          //   cancelButtonText: '留下',
+          //   type: 'warning',
+          //   center: true
+          // }).then(() => {
+          //   removeToken();
+          //   window.location.href = '/login'
+          // })
         }
 
       }
