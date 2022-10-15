@@ -36,7 +36,8 @@
               <strong>文章摘要（用于在文章列表中显示本文的主要内容）：</strong>
               <br>
               <br>
-              <el-input maxlength="255" show-word-limit type="textarea" :rows="4" placeholder="输入文章摘要" v-model="ruleForm.summary">
+              <el-input maxlength="255" show-word-limit type="textarea" :rows="4" placeholder="输入文章摘要"
+                v-model="ruleForm.summary">
               </el-input>
             </div>
 
@@ -59,9 +60,32 @@
             <el-button style="margin-left: 10px" type="primary" @click="handleInputConfirm">确认
             </el-button>
 
+            <!-- 是否进行审核后发布文章 -->
+            <div style="margin-top: 20px;margin-bottom: 20px;">
+              <strong>是否进行审核
+                <a-popover title="Tips:">
+                  <template slot="content">
+                    <p>社区允许您的文章不经审核直接发布，</p>
+                    <p style="color: red">但请注意：如果在未经审核的文章中发现违规内容，文章将会被删除，同时作者会受到惩罚！</p>
+                    <p style="color: red">确保您的内容合规后再进行此操作！</p>
+                  </template>
+                  <a-icon type="question-circle" />
+                </a-popover> ：
+              </strong>
+              <a-radio-group v-model="needReview" name="radioGroup" :default-value="needReview">
+                <a-radio :value="true">
+                  审核
+                </a-radio>
+                <a-radio :value="false">
+                  不审核
+                </a-radio>
+              </a-radio-group>
+            </div>
+
             <el-form-item style="margin-top: 20px">
               <el-button type="primary" @click="submitForm('ruleForm')">发布文章
               </el-button>
+              <el-button type="success" @click="saveForm()">保存</el-button>
               <el-button @click="resetForm('ruleForm')">重置</el-button>
             </el-form-item>
           </el-form>
@@ -78,6 +102,7 @@ import { getSimilarTagListByTagName } from '@/api/tag'
 import Vditor from 'vditor'
 import 'vditor/dist/index.css'
 import vditorConfig from '@/config/vditor'
+import store from '../../store'
 
 
 function getBase64(img, callback) {
@@ -105,6 +130,7 @@ export default {
       inputVisible: false,
       inputTagName: '',
       tagData: [],
+      needReview: true,
       rules: {
         title: [
           { required: true, message: '请输入文章标题', trigger: 'change' },
@@ -120,8 +146,17 @@ export default {
     }
   },
   mounted() {
-    this.contentEditor = new Vditor('vditor', vditorConfig)
     this.fetchSectionList()
+    const formData = JSON.parse(localStorage.getItem("saveFormData"))
+    if (formData) {
+      this.ruleForm = formData
+      vditorConfig.after = () => {
+        this.contentEditor.setValue(formData.content);
+      }
+      this.contentEditor = new Vditor("vditor", vditorConfig);
+      
+    }
+
   },
   methods: {
     submitForm(formName) {
@@ -152,15 +187,28 @@ export default {
           }
           this.submitToast = this.msg.indefiniteInfo("<i class='el-icon-loading'></i>正在处理文章...")
           this.ruleForm.content = content
+          this.ruleForm.needReview = this.needReview
           post(this.ruleForm).then((response) => {
             this.submitToast.close()
             const { data } = response
-            setTimeout(() => {
-              this.$router.push({
-                name: 'post-detail',
-                params: { id: data.value }
-              })
-            }, 1)
+            if (!this.needReview) {
+              setTimeout(() => {
+                this.$router.push({
+                  name: 'post-detail',
+                  params: { id: data.value }
+                })
+              }, 1)
+            }
+            else {
+              this.msg.success("文章已提交审核！")
+              setTimeout(() => {
+                this.$router.push({
+                  name: 'user',
+                  params: { username: store.getters.user.userId },
+                  query: {articleType: "2"}
+                })
+              }, 1)
+            }
           })
         } else {
           this.$refs.myTitle.focus()
@@ -239,6 +287,13 @@ export default {
       this.$refs[formName].resetFields()
       this.contentEditor.setValue('')
       this.ruleForm.tags = ''
+    },
+    saveForm() {
+      this.ruleForm.content = this.contentEditor.getValue()
+      this.ruleForm.needReview = this.needReview
+      console.log(JSON.stringify(this.ruleForm))
+      localStorage.setItem("saveFormData", JSON.stringify(this.ruleForm))
+      this.msg.success("已保存")
     }
   },
 

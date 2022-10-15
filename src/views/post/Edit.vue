@@ -4,7 +4,7 @@
       <div class="column is-full">
         <el-card class="box-card" shadow="never">
           <div slot="header" class="clearfix">
-            <span><i class="fa fa fa-book"> 更新文章</i></span>
+            <span><i class="fa fa fa-book"> {{ isReEdit ? '重新发布' : '更新' }}文章</i></span>
           </div>
           <div>
             <el-form :model="topic" ref="topic" class="demo-topic">
@@ -71,8 +71,34 @@
                 <a-switch @change="isAddUpdateTimeMark" />
               </div> -->
 
+              <!-- 是否进行审核后发布文章 -->
+              <div v-if="!isReEdit" style="margin-top: 20px;margin-bottom: 20px;">
+                <strong>是否进行审核
+                  <a-popover title="Tips:">
+                    <template slot="content">
+                      <p>社区允许您的文章不经审核直接发布，</p>
+                      <p style="color: red">但请注意：如果在未经审核的文章中发现违规内容，文章将会被删除，同时作者会受到惩罚！</p>
+                      <p style="color: red">确保您的内容合规后再进行此操作！</p>
+                    </template>
+                    <a-icon type="question-circle" />
+                  </a-popover> ：
+                </strong>
+                <a-radio-group v-model="needReview" name="radioGroup" :default-value="needReview">
+                  <a-radio :value="true">
+                    审核
+                  </a-radio>
+                  <a-radio :value="false">
+                    不审核
+                  </a-radio>
+                </a-radio-group>
+              </div>
+              <div v-else style="margin-top: 20px;margin-bottom: 20px;">
+                <a-alert message="重新发布被退回的文章时默认需要提交审核" type="info" show-icon />
+              </div>
+
+
               <el-form-item class="mt-3">
-                <el-button type="primary" @click="handleUpdate()">更新
+                <el-button type="primary" @click="handleUpdate()">{{ isReEdit ? '重新发布' : '更新' }}
                 </el-button>
                 <el-button @click="resetForm('topic')">重置</el-button>
               </el-form-item>
@@ -110,6 +136,8 @@ export default {
       submitToast: null,
       sectionList: [],
       sectionInfo: {},
+      needReview: true,
+      isReEdit: this.$route.query.reEdit == null ? false : this.$route.query.reEdit
     };
   },
   created() {
@@ -124,13 +152,9 @@ export default {
       this.contentEditor = new Vditor("vditor", vditorConfig);
     },
     fetchTopic() {
-      getTopicDetail(this.$route.params.id).then((value) => {
+      getTopicDetail(this.$route.params.id, this.isReEdit).then((value) => {
         const { data } = value
-        if (data.authorId != store.getters.user.userId) {
-          window.location.href = "/"
-          return
-        }
-        this.topic = data;
+        this.topic = data
         this.imageUrl = this.topic.mainPic
         this.renderMarkdown(this.topic.content);
         getSectionList().then(rep => {
@@ -164,37 +188,28 @@ export default {
     },
     handleUpdate: function () {
       this.submitToast = this.msg.indefiniteInfo("<i class='el-icon-loading'></i>正在处理文章...")
-      // if (this.addUpdateTime) {
-      //   // 原文章内容
-      //   const originContent = this.topic.content
-      //   // 新文章内容
-      //   const newContent = this.contentEditor.getValue()
-      //   // 在有内容新增的情况下才生效
-      //   if (newContent.length > originContent.length) {
-      //     console.log(typeof originContent)
-      //     console.log(typeof newContent)
-      //     // 获取新增的文章内容
-      //     const addContent = newContent.replace(originContent, "")
-      //     console.log(addContent)
-      //     // 插入时间标记
-      //     const timeMark = "------以下内容更新于" + dayjs().format('YYYY年MM月DD日 HH:mm') + "------"
-      //     // 最终文章内容
-      //     const trueContent = originContent + "\n" + timeMark + "\n" + addContent
-      //     this.topic.content = trueContent
-      //   }
-      // }
-      // else {
-      //   this.topic.content = this.contentEditor.getValue();
-      // }
       this.topic.content = this.contentEditor.getValue();
+      this.topic.needReview = this.needReview
       update(this.topic).then(() => {
         this.submitToast.close()
-        setTimeout(() => {
-          this.$router.push({
-            name: "post-detail",
-            params: { id: this.topic.articleId },
-          });
-        }, 1);
+        if (!this.needReview) {
+          setTimeout(() => {
+            this.$router.push({
+              name: "post-detail",
+              params: { id: this.topic.articleId },
+            });
+          }, 1);
+        }
+        else {
+          this.msg.success("文章已重新提交审核！")
+          setTimeout(() => {
+            this.$router.push({
+              name: 'user',
+              params: { username: store.getters.user.userId },
+              query: { articleType: "2" }
+            })
+          }, 1)
+        }
       });
     },
     handleSectionChange(value) {

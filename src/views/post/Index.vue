@@ -49,7 +49,8 @@ export default {
       const records = data.records
       if(this.page.current == 1) {
         const topArticle = await getIndexTop()
-        records.unshift(topArticle.data)
+        if(topArticle.data) records.unshift(topArticle.data)
+        
       }
       return records
     },

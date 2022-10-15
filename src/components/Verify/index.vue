@@ -9,7 +9,8 @@
             </div>
 
         </div>
-        <div id="components-a-tooltip-demo-placement">
+        <el-divider></el-divider>
+        <div v-if="showWords" id="components-a-tooltip-demo-placement">
             <div :style="{ marginLeft: `${buttonWidth}px`, whiteSpace: 'nowrap' }">
 
                 <a-button @click="handleClick(wordMap.tl)" @mouseleave="handleLeave" @mouseenter="handleHover" id="tl">
@@ -44,7 +45,7 @@
 
             <div :style="{ float: 'left', marginLeft: `${buttonWidth}px`, marginTop: '35px' }">
                 <strong>{{ clickIndex + 1 + '. ' }}请问<span style="color: red;font-size: 24px;">{{ ' ' +
-                        clickOrder[clickIndex] + ' '
+                clickOrder[clickIndex] + ' '
                 }}</span>=</strong>
                 <br>
                 <el-button @click="initList" type="text" icon="el-icon-refresh">换一个</el-button>
@@ -73,13 +74,16 @@
 
                 <a-button @click="handleClick(wordMap.bottom)" @mouseleave="handleLeave" @mouseenter="handleHover"
                     id="bottom">{{
-                            wordMap["bottom"]
+                    wordMap["bottom"]
                     }}</a-button>
 
                 <a-button @click="handleClick(wordMap.br)" @mouseleave="handleLeave" @mouseenter="handleHover" id="br">
                     {{ wordMap["br"] }}
                 </a-button>
             </div>
+        </div>
+        <div class="content" v-else>
+            <h4>加载中...</h4>
         </div>
     </el-dialog>
 </template>
@@ -100,6 +104,7 @@ export default {
         return {
             buttonWidth: 70,
             tVV: false,
+            showWords: false,
             wordMap: {
                 tl: "-",
                 top: "-",
@@ -115,7 +120,7 @@ export default {
                 rb: '-'
             },
             verifyId: "",
-            clickOrder: ['加载中...'],
+            clickOrder: [],
             imgSrc: '',
             clickIndex: 0,
             verifyWord: '',
@@ -156,7 +161,7 @@ export default {
             this.wordMap["rb"] = words[11]
 
             this.clickOrder = data.order
-
+            this.showWords = true
 
         },
         handleClose() {

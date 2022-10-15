@@ -83,6 +83,13 @@
               <b-navbar-item tag="router-link" :to="{ path: `/custom` }">
                 🔧 个性化
               </b-navbar-item>
+              <div v-if="user.roleIdList && user.roleIdList.includes(1, 0)">
+                <hr class="dropdown-divider">
+                <b-navbar-item tag="router-link" :to="{ path: `/admin` }">
+                  🚥 管理页面
+                </b-navbar-item>
+              </div>
+
               <hr class="dropdown-divider">
               <b-navbar-item tag="a" @click="logout"> 👋 退出登录
               </b-navbar-item>

@@ -11,7 +11,7 @@ const headers = {
 // 用户主页文章列表
 export function getInfoByName(username, page, size) {
   return request({
-    url: `/${start}/user/list`,
+    url: `/${start}/open/user/list`,
     method: 'get',
     params: {
       userId: username,
@@ -39,6 +39,7 @@ export function post(topic) {
   data.append("sectionId", topic.sectionId)
   data.append("summary", topic.summary)
   data.append("tags", JSON.stringify(topic.tags))
+  data.append("needReview", topic.needReview)
   return request({
     url: `/${start}/`,
     method: 'post',
@@ -48,10 +49,11 @@ export function post(topic) {
 }
 
 // 获取文章详情
-export function getTopicDetail(id) {
+export function getTopicDetail(id, isReEdit=false) {
   return request({
     url: `/${start}/open/detail/${id}`,
     method: 'get',
+    params: {isReEdit: isReEdit}
   })
 }
 
@@ -76,6 +78,7 @@ export function update(topic) {
   data.append("file", topic.file)
   data.append("content", topic.content)
   data.append("summary", topic.summary)
+  data.append("needReview", topic.needReview)
   return request({
     url: `/${start}/`,
     method: 'put',
@@ -133,6 +136,41 @@ export function getTitleByArticleId(articleId) {
 export function getActiveAuthors(n) {
   return request({
     url: `/${start}/open/mostActiveAuthors/${n}`,
+    method: 'get'
+  })
+}
+
+// 获取待审核的文章列表
+export function getNeedReviewArticleList() {
+  return request({
+    url: `/${start}/admin/needReviewList`,
+    method: 'get'
+  })
+}
+
+// 更新文章审核状态
+export function updateReviewArticleStatus(articleId, isPass) {
+  return request({
+    url: `/${start}/admin/review/id/${articleId}`,
+    method: 'put',
+    params: {
+      isPass: isPass
+    }
+  })
+}
+
+// 根据用户id获取该用户待审核的文章列表
+export function getNeedReviewArticleListByUserId() {
+  return request({
+    url: `/${start}/needReviewList`,
+    method: 'get'
+  })
+}
+
+// 获取审核未通过的文章列表
+export function getUnPassReviewListByUserId() {
+  return request({
+    url: `/${start}/unPassReviewList`,
     method: 'get'
   })
 }

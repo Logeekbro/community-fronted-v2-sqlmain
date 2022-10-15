@@ -24,8 +24,17 @@ router.beforeEach(async (to, from, next) => {
         } else {
             // 获取用户信息
             await store.dispatch('user/getInfo')
-            next()
+            if(!to.meta.requireAdmin) {
+                next()
+            }
+            else if(to.meta.requireAdmin && store.getters.user.roleIdList.includes(1)) {
+                next()
+            }
+            else {
+                next("/404")
+            }
         }
+        
     } else if (!to.meta.requireAuth)
     {
         next()
