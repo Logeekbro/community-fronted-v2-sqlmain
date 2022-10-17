@@ -22,10 +22,10 @@
             <span> 标签 <b-tag rounded> {{ tagList.length }} </b-tag> </span>
           </template>
           <vs-list>
-            <a :href="`/tag/${item.tagName}`" v-for="(item, index) in tagList" :key="index">
+            <router-link :to="{path: `/tag/${item.tagName}`}" v-for="(item, index) in tagList" :key="index">
               <vs-list-item icon="grid_3x3" size="large" :title="item.tagName" :subtitle="item.articleCount + '篇相关文章'">
               </vs-list-item>
-            </a>
+            </router-link>
             <pagination v-show="tagQuery.total > 0" :total="tagQuery.total" :page.sync="tagQuery.pageNum"
               :limit.sync="tagQuery.pageSize" @pagination="fetchTag" />
           </vs-list>

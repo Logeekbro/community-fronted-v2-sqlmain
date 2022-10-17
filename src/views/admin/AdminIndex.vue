@@ -5,29 +5,34 @@
       <a-tab-pane key="1" tab="文章">
         <a-tabs default-active-key="1-1" :animated="{inkBar:true, tabPane:false}">
           <a-tab-pane key="1-1" tab="待审核" style="width: 900px">
+            <!-- 显示文章详情的弹窗 -->
             <a-modal :width="700" v-model="showArticleDetail" title="文章详情" :footer="null" :mask="false"
               :forceRender="true">
               <div class="content">
                 <h3>封面</h3>
-                <img :src="detailArticle.mainPic" style="height: 200px; width: 350px" />
+                <img v-if="detailArticle.mainPic" :src="detailArticle.mainPic" style="height: 200px; width: 350px" />
+                <p v-else>暂无</p>
               </div>
-
               <div>
                 <a-card title="摘要">
                   <strong>{{ detailArticle.summary }}</strong>
                 </a-card>
               </div>
-
-              <br/>
-
+              <br />
               <div>
                 <a-card title="内容">
                   <div id="preview" />
                 </a-card>
               </div>
-              
-
             </a-modal>
+
+            <!-- 选择退回理由的弹窗 -->
+            <a-modal v-model="unPassReasonChoser" title="退回理由" centered okText="确定" cancelText="取消"
+              @ok="doUpass()">
+              <div style="margin: 24px 0" />
+              <a-textarea v-model="unPassReasonText" placeholder="请输入退回的理由..." :auto-size="{ minRows: 3, maxRows: 5 }" />
+            </a-modal>
+
             <el-table :data="needReviewArticleList" border>
               <el-table-column label="文章标题" width="250">
                 <template slot-scope="scope">
@@ -67,15 +72,17 @@
               </el-table-column>
               <el-table-column label="审核">
                 <template slot-scope="scope">
-                  <el-button type="text" @click="updateArticleStatus(scope.$index, scope.row.articleId, true)">通过</el-button>
-                  <el-button type="text" @click="updateArticleStatus(scope.$index, scope.row.articleId, false)">退回</el-button>
+                  <el-button type="text" @click="updateArticleStatus(scope.$index, scope.row.articleId, true)">通过
+                  </el-button>
+                  <el-button type="text" @click="handleUnpassArticle(scope.$index, scope.row.articleId)">退回
+                  </el-button>
                 </template>
               </el-table-column>
             </el-table>
 
           </a-tab-pane>
           <a-tab-pane key="1-2" tab="新发布">
-            Content of Tab Pane 2
+            <ArticleIdToNickName articleId="1581199845740265474"/>
           </a-tab-pane>
         </a-tabs>
       </a-tab-pane>
@@ -95,16 +102,21 @@ import NickName from '../../components/User/NickName.vue';
 import Vditor from 'vditor'
 import SectionIdToName from '../../components/Section/SectionIdToName.vue';
 import Tag from '@/components/Tag/index'
+import ArticleIdToNickName from '../../components/User/ArticleIdToNickName.vue';
 
 export default {
   name: "AdminIndex",
-  components: { NickName, SectionIdToName, Tag },
+  components: { NickName, SectionIdToName, Tag, ArticleIdToNickName },
   props: {},
   data() {
     return {
       needReviewArticleList: [],
       showArticleDetail: false,
-      detailArticle: {}
+      detailArticle: {},
+      unPassReasonChoser: false, // 是否打开退回原因对话框
+      unPassReasonText: '',
+      unPassIndex: null,
+      unPassArticleId: null
     };
   },
   watch: {},
@@ -117,19 +129,28 @@ export default {
         hljs: { style: 'github' }
       })
     },
-    updateArticleStatus(index, articleId, isPss) {
-      updateReviewArticleStatus(articleId,isPss).then(rep => {
+    updateArticleStatus(index, articleId, isPass) {
+      updateReviewArticleStatus(articleId, this.unPassReasonText, isPass).then(rep => {
         this.msg.success("操作成功")
         this.needReviewArticleList.splice(index, 1)
       })
-    }
+    },
+    handleUnpassArticle(index, articleId) {
+      this.unPassReasonChoser = true
+      this.unPassIndex = index
+      this.unPassArticleId = articleId
+    },
+    doUpass() {
+      this.updateArticleStatus(this.unPassIndex, this.unPassArticleId, false)
+      this.unPassReasonChoser = false
+    } 
   },
   created() { },
   mounted() {
     getNeedReviewArticleList().then(rep => {
       this.needReviewArticleList = rep.data
     })
-    
+
   }
 };
 </script>

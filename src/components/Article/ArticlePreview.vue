@@ -12,10 +12,7 @@
                 :src="!item.mainPic ? 'https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png' : item.mainPic" />
             <div style="margin-bottom: 25px">
                 <router-link style="font-size: 18px" :to="{ path: `/post/${item.articleId}` }">
-                    <!-- <a style="font-size: 18px" slot="title" :href="'/post/' + item.articleId"> -->
-                    <strong>{{ item.title
-                    }}</strong>
-                    <!-- </a> -->
+                    <strong>{{ item.title}}</strong>
                 </router-link>
                 <el-tag style="margin-left: 5px" size="small" v-if="item.top">置顶</el-tag>
                 <br>
@@ -41,6 +38,31 @@
             <div style="margin-top: 15px">
                 <score :articleId="item.articleId"></score>
             </div>
+
+            <div v-if="user.roleIdList && user.roleIdList.includes(1, 0)"
+                style="background-color: aliceblue; margin-top: 10px;padding: 10px">
+                <!-- <el-divider></el-divider> -->
+                <div>
+                    <strong>管理员操作：</strong><br />
+                    <div style="margin-top: 10px;">
+                        <a-button v-if="!item.top" @click="handleSetTop(index, item.articleId, false)" type="primary"
+                            size="small">
+                            置顶
+                        </a-button>
+                        <a-button v-else @click="handleSetTop(index, item.articleId, true)" type="primary" size="small">
+                            取消置顶
+                        </a-button>
+                        <a-popconfirm title="确定要删除此文章吗?" ok-text="确定" cancel-text="取消"
+                            @confirm="handleDelete(index, item.articleId)">
+                            <a-button style="margin-left: 10px" type="danger" size="small">
+                                删除
+                            </a-button>
+                        </a-popconfirm>
+                    </div>
+                </div>
+
+
+            </div>
         </a-list-item>
     </a-list>
 </template>
@@ -50,7 +72,8 @@ import UserAvatar from '@/components/User/Avatar'
 import dayjs from 'dayjs'
 import Score from '@/components/Article/Score'
 import Tag from '@/components/Tag/index'
-
+import { deleteArticleById, changeArticleTopStatus } from '@/api/post'
+import { mapGetters } from 'vuex'
 
 export default {
     name: 'ArticlePreview',
@@ -88,7 +111,7 @@ export default {
         }
     },
     computed: {
-
+        ...mapGetters(['user'])
     },
     methods: {
         async fetchData() {
@@ -111,6 +134,27 @@ export default {
             else {
                 this.showLoadMore = true
             }
+        },
+        async handleSetTop(index, articleId, isTop) {
+            const rep = await changeArticleTopStatus(articleId)
+            // const del = this.articleList.splice(index, 1)
+            this.articleList[index].top = !isTop
+            if (isTop) {
+                this.msg.success("已取消置顶")
+            }
+            else {
+                this.msg.success("已置顶")
+            }
+            this.articleList.sort((a, b) => {
+                if (b.top != a.top) return b.top - a.top
+                else return a.createTime > b.createTime ? -1 : 1
+            })
+        },
+        handleDelete(index, articleId) {
+            deleteArticleById(articleId).then(rep => {
+                this.articleList.splice(index, 1)
+                this.msg.success("删除成功")
+            })
         },
         parseTime(publishTime) {
             // 拿到当前时间戳和发布时的时间戳

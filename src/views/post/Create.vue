@@ -150,6 +150,7 @@ export default {
     const formData = JSON.parse(localStorage.getItem("saveFormData"))
     if (formData) {
       this.ruleForm = formData
+      this.imageUrl = this.ruleForm.mainPic
       vditorConfig.after = () => {
         this.contentEditor.setValue(formData.content);
       }

@@ -37,7 +37,7 @@
                 </div>
                 <div v-if="topics.length === 0">
                   <el-empty description="暂无文章">
-                    <a v-if="topicUser.userId == user.userId" href="/post/create" style="color: blue">点击去发表</a>
+                    <!-- <a v-if="topicUser.userId == user.userId" href="/post/create" style="color: blue">点击去发表</a> -->
                   </el-empty>
                 </div>
 
@@ -90,13 +90,13 @@
                 <!-- 垂直标签页 -->
                 <a-tabs :default-active-key="defaultOpenKey ?  defaultOpenKey : '1'" tab-position="left">
                   <!-- 已发布文章 -->
-                  <a-tab-pane key="1" tab="已发布">
+                  <a-tab-pane key="1" :tab="'已发布' + `(${page.total})`">
                     <div v-if="loadText != ''">
                       {{ loadText }}
                     </div>
                     <div v-if="topics.length === 0">
                       <el-empty description="暂无文章">
-                        <a v-if="topicUser.userId == user.userId" href="/post/create" style="color: blue">点击去发表</a>
+                        <router-link v-if="topicUser.userId == user.userId" :to="{path: '/post/create'}" style="color: #167df0">点击去发表</router-link>
                       </el-empty>
                     </div>
                     <div v-else class="topicUser-info">
@@ -145,7 +145,7 @@
                       :limit.sync="page.size" @pagination="fetchUserById" />
                   </a-tab-pane>
                   <!-- 待审核文章 -->
-                  <a-tab-pane key="2" tab="待审核">
+                  <a-tab-pane key="2" :tab="'待审核' + `(${needReviewArticleCount})`">
                     <div v-if="needReviewArticles.length === 0">
                       <el-empty description="暂无数据">
                         <!-- <a v-if="isSelf" href="/post/create" style="color: blue">点击去发表</a> -->
@@ -191,7 +191,7 @@
                     </div>
                   </a-tab-pane>
                   <!-- 已退回文章 -->
-                  <a-tab-pane key="3" tab="已退回">
+                  <a-tab-pane key="3" :tab="'已退回' + `(${unPassArticleCount})`">
                     <div v-if="unPassArticles.length === 0">
                       <el-empty description="暂无数据">
                         <!-- <a v-if="isSelf" href="/post/create" style="color: blue">点击去发表</a> -->
@@ -223,14 +223,14 @@
                                 <span class="tag is-info">重新编辑</span>
                               </router-link>
                             </div>
-                            <div class="level-item">
+                            <!-- <div class="level-item">
                               <a-popconfirm title="确定要删除该文章吗?" ok-text="确认" cancel-text="取消"
                                 @confirm="handleDelete(item.articleId)">
                                 <a>
                                   <span class="tag is-danger">删除</span>
                                 </a>
                               </a-popconfirm>
-                            </div>
+                            </div> -->
                           </div>
                         </div>
                       </article>
@@ -305,7 +305,9 @@ export default {
       isSelf: false,
       needReviewArticles: [],
       unPassArticles: [],
-      defaultOpenKey: this.$route.query.articleType
+      defaultOpenKey: this.$route.query.articleType,
+      needReviewArticleCount: 0,
+      unPassArticleCount: 0
     }
   },
   computed: {
@@ -314,6 +316,12 @@ export default {
   watch: {
     topicUser: function (n, o) {
       this.isSelf = n.userId == store.getters.user.userId
+    },
+    needReviewArticles: function(n, o) {
+      this.needReviewArticleCount = n.length
+    },
+    unPassArticles: function(n, o) {
+      this.unPassArticleCount = n.length
     }
   },
   mounted() {

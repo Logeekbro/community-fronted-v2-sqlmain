@@ -59,6 +59,14 @@ export function getNickNameByUserId(userId) {
   })
 }
 
+// 通过文章id获取用户的id和昵称
+export function getAuthorIdAndNickNameByArticleId(articleId) {
+  return request({
+    url: `/user/open/articleIdToAuthorInfo/${articleId}`,
+    method: 'get'
+  })
+}
+
 
 
 

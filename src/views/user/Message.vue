@@ -111,21 +111,50 @@
                                 id='messageContainer-system' ref="systemMessage">
                                 <div v-for="(item, index) in systemMessageList" :key="index">
                                     <!-- 系统消息 -->
-                                    <div class="level-right" style="margin-bottom: 20px;">
+                                    <div v-if="item.displayName == 'LIKE_NOTION'" class="level-right"
+                                        style="margin-bottom: 20px;">
                                         <b-message style="width: 50%;margin-right: 10px;" size="is-small" type="is-info"
                                             :title="dayjs(item.createTime).format('YYYY/MM/DD HH:mm')"
                                             :closable="false">
                                             <div style="font-size: 18px">
                                                 <span v-if="item.likeUserId == guestUserId">一名游客</span>
-                                                <span v-else>用户 <a :href="'/member/' + item.likeUserId + '/home'">
+                                                <span v-else>用户 <router-link :to="{path: '/member/' + item.likeUserId + '/home'}">
                                                         <nick-name :userId="item.likeUserId"></nick-name>
-                                                    </a></span>
+                                                    </router-link></span>
                                                 <span> 点赞了你的</span>
                                                 <span v-if="item.notionType == 'ARTICLE'">
-                                                    文章： <a :href='"/post/"+item.beLikeId'>
+                                                    文章： <router-link :to='{path: "/post/"+item.beLikeId}'>
                                                         <article-title :articleId="item.beLikeId"></article-title>
-                                                    </a>
+                                                    </router-link>
                                                 </span>
+                                            </div>
+                                        </b-message>
+                                        <a-avatar shape="square" :size="40"
+                                            src="https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
+                                            style="margin-right: 5px" />
+                                        <!-- <router-link :to="{ path: `/member/${targetInfo.userId}/home` }">
+                                            <a-avatar shape="circle" :size="36" :src="targetInfo.avatar"
+                                                style="margin-left: 5px" />
+                                        </router-link> -->
+                                    </div>
+                                    <div v-else-if="item.displayName == 'REVIEW_RESULT_NOTION'" class="level-right"
+                                        style="margin-bottom: 20px;">
+                                        <b-message style="width: 50%;margin-right: 10px;" size="is-small" type="is-info"
+                                            :title="dayjs(item.createTime).format('YYYY/MM/DD HH:mm')"
+                                            :closable="false">
+                                            <div style="font-size: 18px">
+                                                <span>您的文章：</span>
+                                                <router-link v-if="item.isPass" :to='{path: "/post/"+item.articleId}'>
+                                                    <article-title :articleId="item.articleId"></article-title>
+                                                </router-link>
+                                                <article-title v-else :articleId="item.articleId"></article-title>
+                                                <span>{{ item.isPass ? '已' : '未' }}通过审核</span>
+                                                <br/>
+                                                <span v-if="!item.isPass"> 原因：{{ item.description }}</span>
+                                                <br/>
+                                                <router-link v-if="!item.isPass" :to='{path: "/topic/edit/"+item.articleId, query: {reEdit: true}}'>
+                                                    点此重新编辑文章
+                                                </router-link>
                                             </div>
                                         </b-message>
                                         <a-avatar shape="square" :size="40"
@@ -388,7 +417,7 @@ export default {
                 this.$nextTick(() => {
                     this.$refs.systemMessage.scrollTop = this.$refs.systemMessage.scrollHeight;
                 })
-                
+
             })
 
         },

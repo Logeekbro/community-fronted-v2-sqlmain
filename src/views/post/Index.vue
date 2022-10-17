@@ -46,11 +46,10 @@ export default {
       this.page.current = data.current
       this.page.total = data.total
       this.page.size = data.size
-      const records = data.records
+      let records = data.records
       if(this.page.current == 1) {
         const topArticle = await getIndexTop()
-        if(topArticle.data) records.unshift(topArticle.data)
-        
+        if(topArticle.data && topArticle.data.length > 0) records = topArticle.data.concat(records)
       }
       return records
     },

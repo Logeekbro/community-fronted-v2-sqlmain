@@ -149,12 +149,13 @@ export function getNeedReviewArticleList() {
 }
 
 // 更新文章审核状态
-export function updateReviewArticleStatus(articleId, isPass) {
+export function updateReviewArticleStatus(articleId, desc = '', isPass) {
   return request({
     url: `/${start}/admin/review/id/${articleId}`,
     method: 'put',
     params: {
-      isPass: isPass
+      isPass: isPass,
+      description: desc
     }
   })
 }
@@ -172,6 +173,24 @@ export function getUnPassReviewListByUserId() {
   return request({
     url: `/${start}/unPassReviewList`,
     method: 'get'
+  })
+}
+
+// 直接根据id删除文章，需要管理员权限
+export function deleteArticleById(articleId) {
+  return request({
+    url: `/${start}/admin/id`,
+    method: 'delete',
+    params: {articleId: articleId}
+  })
+}
+
+// 将文章设为置顶或取消置顶，需要管理员权限
+export function changeArticleTopStatus(articleId) {
+  return request({
+    url: `/${start}/admin/topStatus`,
+    method: 'put',
+    params: {articleId: articleId}
   })
 }
 

@@ -20,8 +20,6 @@ export default {
   },
   watch: {
     articleId: function(n, o) {
-        console.log("新的articleId:")
-        console.log(n)
         this.getTitle(n);
     }
   },
@@ -29,7 +27,8 @@ export default {
   methods: {
     getTitle(articleId) {
         getTitleByArticleId(articleId).then(rep => {
-            this.title = '《' + rep.data.value + '》'
+            if(rep.data.value) this.title = '《' + rep.data.value + '》'
+            
         })
     }
   },
