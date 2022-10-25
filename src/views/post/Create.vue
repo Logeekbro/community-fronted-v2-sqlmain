@@ -154,9 +154,10 @@ export default {
       vditorConfig.after = () => {
         this.contentEditor.setValue(formData.content);
       }
-      this.contentEditor = new Vditor("vditor", vditorConfig);
+      
       
     }
+    this.contentEditor = new Vditor("vditor", vditorConfig);
 
   },
   methods: {
